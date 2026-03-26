@@ -29,7 +29,7 @@ export async function CodeBlock({ code, language = 'bash', filename }: CodeBlock
         <CopyButton text={code.trim()} />
       </div>
       <div
-        className="overflow-x-auto text-sm [&>pre]:px-4 [&>pre]:py-3 [&>pre]:m-0 [&>pre]:bg-transparent! [&>pre]:overflow-x-auto"
+        className="overflow-x-auto text-[13px] [&>pre]:px-3 [&>pre]:py-2.5 [&>pre]:m-0 [&>pre]:bg-transparent! [&>pre]:overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>

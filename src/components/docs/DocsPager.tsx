@@ -20,35 +20,35 @@ export function DocsPager({ currentSlug }: { currentSlug: string[] }) {
 
   return (
     <nav
-      className="flex items-start justify-between mt-12 pt-6 border-t border-surface-border"
+      className="grid grid-cols-2 gap-4 mt-12 pt-8 border-t border-surface-border"
       aria-label="Pagination"
     >
       <div>
         {prev && (
           <Link
             href={prev.href}
-            className="group flex flex-col gap-1 text-left"
+            className="group flex flex-col gap-1.5 text-left rounded-lg border border-surface-border px-4 py-3 hover:border-brand/40 hover:bg-surface-raised transition-colors"
           >
             <span className="text-xs text-text-muted group-hover:text-text-secondary transition-colors">
-              ← Previous
+              Previous
             </span>
             <span className="text-sm font-medium text-text-secondary group-hover:text-brand transition-colors">
-              {prev.title}
+              ← {prev.title}
             </span>
           </Link>
         )}
       </div>
-      <div>
+      <div className="flex justify-end">
         {next && (
           <Link
             href={next.href}
-            className="group flex flex-col gap-1 text-right"
+            className="group flex flex-col gap-1.5 text-right rounded-lg border border-surface-border px-4 py-3 hover:border-brand/40 hover:bg-surface-raised transition-colors"
           >
             <span className="text-xs text-text-muted group-hover:text-text-secondary transition-colors">
-              Next →
+              Next
             </span>
             <span className="text-sm font-medium text-text-secondary group-hover:text-brand transition-colors">
-              {next.title}
+              {next.title} →
             </span>
           </Link>
         )}

@@ -9,13 +9,13 @@ export function DocsSidebarClient({ sections }: { sections: NavSection[] }) {
   const pathname = usePathname()
 
   return (
-    <nav className="space-y-5">
+    <nav className="space-y-6 pt-2">
       {sections.map((section) => (
         <div key={section.title}>
-          <p className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-1.5 px-2">
+          <p className="text-[11px] font-mono uppercase tracking-widest text-text-muted mb-2 px-3">
             {section.title}
           </p>
-          <ul className="space-y-px">
+          <ul className="space-y-0.5">
             {section.items.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -23,9 +23,9 @@ export function DocsSidebarClient({ sections }: { sections: NavSection[] }) {
                   <Link
                     href={item.href}
                     className={clsx(
-                      'block px-2 py-1 rounded text-xs transition-colors',
+                      'block px-3 py-1.5 rounded-md text-[13px] transition-colors',
                       isActive
-                        ? 'text-text-primary bg-surface-overlay'
+                        ? 'text-brand font-medium bg-brand/10'
                         : 'text-text-secondary hover:text-text-primary hover:bg-surface-raised'
                     )}
                   >
