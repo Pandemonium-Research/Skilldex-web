@@ -3,7 +3,7 @@ import { SkillCard } from '@/components/registry/SkillCard'
 import { searchSkills } from '@/lib/registry'
 
 type Props = {
-  searchParams: { q?: string; tier?: string; sort?: string; offset?: string }
+  searchParams: { q?: string; tier?: string; sort?: string; offset?: string; limit?: string }
 }
 
 export const metadata = {
@@ -11,9 +11,20 @@ export const metadata = {
   description: 'Browse and search Claude skill packages',
 }
 
+function buildHref(searchParams: Props['searchParams'], updates: Partial<Props['searchParams']>) {
+  const merged = { ...searchParams, ...updates }
+  const params = new URLSearchParams()
+  if (merged.q) params.set('q', merged.q)
+  if (merged.tier) params.set('tier', merged.tier)
+  if (merged.sort && merged.sort !== 'installs') params.set('sort', merged.sort)
+  if (merged.limit && merged.limit !== '20') params.set('limit', merged.limit)
+  if (merged.offset && merged.offset !== '0') params.set('offset', merged.offset)
+  return `/registry${params.size ? `?${params.toString()}` : ''}`
+}
+
 export default async function RegistryPage({ searchParams }: Props) {
-  const offset = Number(searchParams.offset) || 0
-  const limit = 20
+  const limit = Math.min(Math.max(Number(searchParams.limit) || 20, 1), 100)
+  const offset = Math.max(Number(searchParams.offset) || 0, 0)
 
   const { skills, total } = await searchSkills({
     q: searchParams.q,
@@ -22,6 +33,25 @@ export default async function RegistryPage({ searchParams }: Props) {
     limit,
     offset,
   })
+
+  const totalPages = Math.ceil(total / limit)
+  const currentPage = Math.floor(offset / limit) + 1
+  const firstItem = total === 0 ? 0 : offset + 1
+  const lastItem = Math.min(offset + limit, total)
+
+  // Build page number links — show up to 7 around current page
+  function getPageNumbers() {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    const pages: (number | '...')[] = []
+    pages.push(1)
+    if (currentPage > 3) pages.push('...')
+    for (let p = Math.max(2, currentPage - 1); p <= Math.min(totalPages - 1, currentPage + 1); p++) {
+      pages.push(p)
+    }
+    if (currentPage < totalPages - 2) pages.push('...')
+    pages.push(totalPages)
+    return pages
+  }
 
   return (
     <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
@@ -39,6 +69,7 @@ export default async function RegistryPage({ searchParams }: Props) {
           defaultQ={searchParams.q}
           defaultTier={searchParams.tier}
           defaultSort={searchParams.sort}
+          defaultLimit={limit}
         />
       </div>
 
@@ -55,10 +86,17 @@ export default async function RegistryPage({ searchParams }: Props) {
         </div>
       ) : (
         <>
-          <p className="text-xs font-mono text-text-muted mb-3">
-            {total} skill{total !== 1 ? 's' : ''}
-            {searchParams.q ? ` for "${searchParams.q}"` : ''}
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-mono text-text-muted">
+              Showing {firstItem}–{lastItem} of {total} skill{total !== 1 ? 's' : ''}
+              {searchParams.q ? ` for "${searchParams.q}"` : ''}
+            </p>
+            {totalPages > 1 && (
+              <p className="text-xs font-mono text-text-muted">
+                Page {currentPage} of {totalPages}
+              </p>
+            )}
+          </div>
 
           <div className="divide-y divide-surface-border border border-surface-border rounded-lg overflow-hidden">
             {skills.map((skill) => (
@@ -66,24 +104,55 @@ export default async function RegistryPage({ searchParams }: Props) {
             ))}
           </div>
 
-          {total > limit && (
-            <div className="flex justify-between mt-6">
-              {offset > 0 ? (
-                <a
-                  href={`/registry?${new URLSearchParams({ ...searchParams, offset: String(offset - limit) })}`}
-                  className="text-xs font-mono text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  ← Previous
-                </a>
-              ) : <span />}
-              {offset + limit < total && (
-                <a
-                  href={`/registry?${new URLSearchParams({ ...searchParams, offset: String(offset + limit) })}`}
-                  className="text-xs font-mono text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  Next →
-                </a>
-              )}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6">
+              <a
+                href={currentPage > 1
+                  ? buildHref(searchParams, { offset: String((currentPage - 2) * limit) })
+                  : undefined}
+                aria-disabled={currentPage === 1}
+                className={`text-xs font-mono transition-colors ${
+                  currentPage === 1
+                    ? 'text-text-muted pointer-events-none'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                ← Previous
+              </a>
+
+              <div className="flex items-center gap-1">
+                {getPageNumbers().map((p, i) =>
+                  p === '...' ? (
+                    <span key={`ellipsis-${i}`} className="text-xs font-mono text-text-muted px-1">…</span>
+                  ) : (
+                    <a
+                      key={p}
+                      href={buildHref(searchParams, { offset: String((p - 1) * limit) })}
+                      className={`text-xs font-mono w-7 h-7 flex items-center justify-center rounded transition-colors ${
+                        p === currentPage
+                          ? 'bg-surface-overlay text-text-primary border border-surface-border'
+                          : 'text-text-muted hover:text-text-primary'
+                      }`}
+                    >
+                      {p}
+                    </a>
+                  )
+                )}
+              </div>
+
+              <a
+                href={currentPage < totalPages
+                  ? buildHref(searchParams, { offset: String(currentPage * limit) })
+                  : undefined}
+                aria-disabled={currentPage === totalPages}
+                className={`text-xs font-mono transition-colors ${
+                  currentPage === totalPages
+                    ? 'text-text-muted pointer-events-none'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Next →
+              </a>
             </div>
           )}
         </>
