@@ -1,0 +1,49 @@
+---
+title: "skillpm suggest"
+description: "Get skill recommendations based on your project."
+section: "CLI Reference"
+order: 14
+---
+
+# skillpm suggest
+
+Analyse the current project and suggest relevant skills from the registry.
+
+## Usage
+
+```bash
+skillpm suggest
+```
+
+## Flags
+
+| Flag | Description |
+|---|---|
+| `--limit <n>` | Maximum number of suggestions (default: 5) |
+| `--json` | Output as JSON |
+
+## Examples
+
+```bash
+# Get suggestions for the current project
+skillpm suggest
+
+# Get up to 10 suggestions
+skillpm suggest --limit 10
+```
+
+## Example output
+
+```text
+Analysing project...
+Detected: TypeScript, React, Vitest, GitHub Actions
+
+Suggested skills:
+  1. test-generator     score: 87  Generates Vitest/Jest tests from source files
+  2. pr-reviewer        score: 91  Automated PR review with inline comments
+  3. ci-debugger        score: 78  Diagnoses failing GitHub Actions workflows
+
+Install with: skillpm install <skill-name>
+```
+
+`suggest` looks at your `package.json`, file structure, and config files to produce relevant recommendations.

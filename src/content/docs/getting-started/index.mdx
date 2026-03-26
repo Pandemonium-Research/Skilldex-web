@@ -1,0 +1,54 @@
+---
+title: "What is Skilldex"
+description: "An introduction to Skilldex — the package manager for Claude Code skills."
+section: "Getting Started"
+order: 1
+---
+
+# What is Skilldex
+
+Skilldex is a package manager for Claude Code skills. It lets you install, share, and discover skills — reusable instruction sets that extend what Claude Code can do in your projects.
+
+Think of it like npm, but for AI agent capabilities instead of JavaScript libraries.
+
+## The problem it solves
+
+Claude Code skills are powerful, but today they live scattered across individual projects with no standard way to share them. If you write a great debugging skill for one repo, there is no easy way to use it in another — let alone share it with the community.
+
+Skilldex fixes this with three things:
+
+1. **A CLI** (`skillpm`) for installing and managing skills
+2. **A registry** for discovering and publishing skills
+3. **A spec** that defines what a valid skill looks like
+
+## Key concepts
+
+### Skills
+
+A skill is a markdown file (or a package containing one) that teaches Claude Code how to do something specific. Examples: `forensics-agent`, `pr-reviewer`, `test-generator`.
+
+Skills are installed into one of three scopes:
+
+- **Global** — available in all your Claude Code sessions
+- **Shared** — available to everyone in a shared environment
+- **Project** — checked into your repo, available to anyone who clones it
+
+### The registry
+
+The Skilldex registry stores metadata about published skills. When you run `skillpm install forensics-agent`, the CLI looks up the skill in the registry, downloads it, and installs it to the right scope.
+
+### Quality scores
+
+Every skill in the registry has a format conformance score (0–100) that measures how well it follows the Skilldex spec. A higher score means the skill is more likely to work correctly across Claude Code versions.
+
+## What Skilldex is not
+
+- Not a plugin system — skills are instruction sets, not code that runs in Claude
+- Not a model fine-tuning tool — skills work with any Claude version
+- Not a replacement for CLAUDE.md — skills complement project-level instructions
+
+## Next steps
+
+- [Install the CLI](/install) — get `skillpm` running in under 60 seconds
+- [Your first skill](/docs/getting-started/first-skill) — install and use a skill from the registry
+- [CLI reference](/docs/cli/install) — full documentation of every command

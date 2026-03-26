@@ -1,0 +1,78 @@
+---
+title: "Installation"
+description: "How to install the skillpm CLI on macOS, Linux, and Windows."
+section: "Getting Started"
+order: 2
+---
+
+# Installation
+
+Install the `skillpm` CLI using your preferred method.
+
+## npm (recommended)
+
+Requires Node.js 18 or later.
+
+```bash
+npm install -g skillpm
+```
+
+## Homebrew (macOS/Linux)
+
+```bash
+brew install skilldex
+```
+
+## curl (macOS/Linux)
+
+The install script detects your OS and architecture automatically.
+
+```bash
+curl -fsSL https://skilldex.dev/install.sh | sh
+```
+
+## winget (Windows)
+
+```bash
+winget install skilldex
+```
+
+## Scoop (Windows)
+
+```bash
+scoop install skilldex
+```
+
+## Verify the install
+
+After installing, confirm the CLI is working:
+
+```bash
+skillpm --version
+```
+
+You should see the version number printed to stdout, for example `skillpm 1.0.0`.
+
+## Troubleshooting
+
+**Command not found after npm install**
+
+Make sure your global npm bin directory is in your PATH:
+
+```bash
+npm config get prefix
+# Add the output path + /bin to your PATH
+```
+
+**Permission denied on macOS/Linux**
+
+Avoid using `sudo` with npm. Instead, configure npm to use a directory you own:
+
+```bash
+npm config set prefix ~/.npm-global
+export PATH=$HOME/.npm-global/bin:$PATH
+```
+
+## Next steps
+
+[Your first skill →](/docs/getting-started/first-skill)

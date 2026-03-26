@@ -1,0 +1,57 @@
+---
+title: "skillpm publish"
+description: "Publish a skill to the Skilldex registry."
+section: "CLI Reference"
+order: 15
+---
+
+# skillpm publish
+
+Package and publish a skill to the Skilldex registry.
+
+## Usage
+
+```bash
+skillpm publish
+```
+
+Run from the skill's root directory. The directory must contain a valid `SKILL.md` and pass `skillpm validate`.
+
+## Flags
+
+| Flag | Description |
+|---|---|
+| `--dry-run` | Package the skill and validate without publishing |
+| `--tag <tag>` | Publish with a dist-tag (default: `latest`) |
+
+## Examples
+
+```bash
+# Publish the skill in the current directory
+skillpm publish
+
+# Preview what would be published
+skillpm publish --dry-run
+
+# Publish as a beta release
+skillpm publish --tag beta
+```
+
+## Pre-publish checklist
+
+Before publishing, make sure:
+
+1. `skillpm validate` passes with no errors
+2. Version in `SKILL.md` frontmatter is bumped
+3. `SKILL.md` has a meaningful description
+4. Any referenced resources are included
+
+## What happens on publish
+
+1. The skill directory is validated
+2. The format conformance score is calculated
+3. The skill is packaged into a `.skill` archive
+4. The archive is uploaded to the registry
+5. The registry metadata is updated
+
+See [Publishing to the registry](/docs/publishing/publishing-to-registry) for a full walkthrough.

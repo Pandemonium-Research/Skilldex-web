@@ -1,0 +1,80 @@
+---
+title: "Your first skill"
+description: "Install and use your first skill from the Skilldex registry in under two minutes."
+section: "Getting Started"
+order: 3
+---
+
+# Your first skill
+
+This guide walks you through installing a skill from the registry and using it in Claude Code.
+
+## 1. Search for a skill
+
+```bash
+skillpm search forensics
+```
+
+Output:
+
+```text
+forensics-agent  1.2.0  Verified  score: 94  Deep code analysis and debugging
+```
+
+## 2. Install the skill
+
+```bash
+skillpm install forensics-agent
+```
+
+By default, skills are installed to global scope so they are available in all Claude Code sessions.
+
+```text
+✓ forensics-agent@1.2.0 (score: 94/100, Verified)
+✓ Installed 1 skill, 3 resources
+```
+
+## 3. Verify the install
+
+```bash
+skillpm list
+```
+
+```text
+Global skills (1):
+  forensics-agent  1.2.0  Verified  score: 94
+```
+
+## 4. Use it in Claude Code
+
+Open Claude Code in any project. The `forensics-agent` skill is now available as a slash command:
+
+```
+/forensics-analyze
+```
+
+Claude Code will use the skill's instructions to guide its analysis.
+
+## Install to a specific scope
+
+Use the `--scope` flag to control where the skill is installed:
+
+```bash
+# Install globally (default)
+skillpm install forensics-agent --scope global
+
+# Install into the current project (saved to skilldex.json)
+skillpm install forensics-agent --scope project
+```
+
+## Uninstall a skill
+
+```bash
+skillpm uninstall forensics-agent
+```
+
+## Next steps
+
+- [CLI reference](/docs/cli/install) — all commands and flags
+- [Scopes explained](/docs/concepts/scopes) — when to use global vs project scope
+- [Browse the registry](/registry) — discover more skills

@@ -1,0 +1,55 @@
+---
+title: "The manifest (skilldex.json)"
+description: "How skilldex.json tracks project-scoped skills."
+section: "Concepts"
+order: 21
+---
+
+# The manifest (skilldex.json)
+
+`skilldex.json` is the project-level manifest file for Skilldex. It lives at the root of your project and records which skills are installed at project scope.
+
+## Structure
+
+```json
+{
+  "version": "1",
+  "skills": {
+    "forensics-agent": "1.2.0",
+    "test-generator": "^2.0.0"
+  }
+}
+```
+
+| Field | Description |
+|---|---|
+| `version` | Manifest format version (currently `"1"`) |
+| `skills` | Map of skill name to version range |
+
+## Version ranges
+
+Version ranges follow semver conventions:
+
+| Range | Meaning |
+|---|---|
+| `"1.2.0"` | Exact version |
+| `"^1.2.0"` | Compatible with 1.2.0 (same major) |
+| `"~1.2.0"` | Approximately 1.2.0 (same minor) |
+| `"latest"` | Latest published version |
+
+## Installing from the manifest
+
+Running `skillpm install` in a directory with a `skilldex.json` installs all listed skills:
+
+```bash
+skillpm install
+```
+
+This is useful in CI pipelines and when onboarding new team members — one command restores the full skill set for the project.
+
+## Committing to version control
+
+Commit `skilldex.json` to your repo. Whether to commit the installed skill files in `.skilldex/skills/` depends on your workflow:
+
+- **Commit the files** — no install step needed, works offline
+- **Gitignore the files** — run `skillpm install` to restore (like `npm install`)

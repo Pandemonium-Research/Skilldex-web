@@ -1,0 +1,54 @@
+---
+title: "Publishing to the registry"
+description: "How to submit a skill to the Skilldex registry."
+section: "Publishing Skills"
+order: 32
+---
+
+# Publishing to the registry
+
+## Before you publish
+
+1. Your skill passes `skillpm validate` with no errors
+2. Version is bumped from any previous release
+3. Description is accurate and at least 20 characters
+4. You have a Skilldex account (sign in at skilldex.dev — coming in Phase 3)
+
+## Publish
+
+```bash
+skillpm publish
+```
+
+`skillpm` will authenticate, package, validate, and upload in one step.
+
+## What happens next
+
+After publishing:
+
+1. Your skill appears in the registry with a `Community` trust tier
+2. The format conformance score is calculated and displayed on the skill page
+3. Users can install it with `skillpm install your-skill-name`
+
+## Updating a skill
+
+Bump the version in `SKILL.md` frontmatter and run `skillpm publish` again. All previous versions remain available in the registry.
+
+## Unpublishing
+
+Skills cannot be deleted from the registry once other users have installed them. You can deprecate a version:
+
+```bash
+skillpm deprecate my-skill@1.0.0 "Use 2.0.0 instead"
+```
+
+Deprecated versions show a warning when installed but remain available.
+
+## Verified tier
+
+To apply for Verified status, open an issue in the Skilldex GitHub repository with a link to your published skill. Verified status is granted to skills that:
+
+- Score 90+ on format conformance
+- Have clear, accurate documentation
+- Are actively maintained
+- Do not contain harmful or deceptive content

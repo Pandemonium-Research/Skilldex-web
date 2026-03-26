@@ -1,0 +1,79 @@
+---
+title: "Skill format"
+description: "The structure of a valid Skilldex skill package."
+section: "Concepts"
+order: 22
+---
+
+# Skill format
+
+A Skilldex skill is a directory with a `SKILL.md` file at the root, plus optional resource files.
+
+## Directory structure
+
+```
+my-skill/
+├── SKILL.md          ← required: the skill definition
+└── resources/        ← optional: scripts, data files, references
+    ├── helper.sh
+    └── reference.md
+```
+
+## SKILL.md
+
+`SKILL.md` is a markdown file with YAML frontmatter.
+
+### Frontmatter
+
+```yaml
+---
+title: "My Skill"
+description: "A brief description of what this skill does."
+version: "1.0.0"
+specVersion: "1.0"
+author: "your-github-username"
+license: "MIT"
+tags:
+  - debugging
+  - typescript
+resources:
+  - path: resources/helper.sh
+    type: script
+  - path: resources/reference.md
+    type: reference
+---
+```
+
+### Required fields
+
+| Field | Description |
+|---|---|
+| `title` | Human-readable skill name |
+| `description` | One-sentence description shown in the registry |
+| `version` | Semantic version of this skill release |
+| `specVersion` | The Skilldex spec version this skill targets |
+
+### Optional fields
+
+| Field | Description |
+|---|---|
+| `author` | GitHub username or display name |
+| `license` | SPDX license identifier |
+| `tags` | Array of searchable tags |
+| `resources` | Array of resource file references |
+
+## The skill body
+
+After the frontmatter, the rest of `SKILL.md` is the skill's instruction content — what Claude Code reads and uses. Write it as you would a detailed prompt or instruction set.
+
+## Packaging
+
+Skills are distributed as `.skill` archives (gzip-compressed tar). The `skillpm publish` command creates this archive automatically.
+
+## Validation
+
+Run `skillpm validate` to check your skill against the spec before publishing:
+
+```bash
+skillpm validate ./my-skill
+```

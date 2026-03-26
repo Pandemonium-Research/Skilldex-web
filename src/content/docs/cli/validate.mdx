@@ -1,0 +1,64 @@
+---
+title: "skillpm validate"
+description: "Validate a skill against the Skilldex spec before publishing."
+section: "CLI Reference"
+order: 13
+---
+
+# skillpm validate
+
+Check that a skill directory conforms to the Skilldex spec. Run this before publishing.
+
+## Usage
+
+```bash
+skillpm validate [path]
+```
+
+`path` defaults to the current directory.
+
+## Flags
+
+| Flag | Description |
+|---|---|
+| `--strict` | Fail on warnings as well as errors |
+| `--json` | Output results as JSON |
+
+## Examples
+
+```bash
+# Validate the current directory
+skillpm validate
+
+# Validate a specific path
+skillpm validate ./my-skill
+
+# Fail on warnings too
+skillpm validate --strict
+```
+
+## Example output
+
+```text
+Validating ./my-skill against spec v1.0...
+
+✓ SKILL.md present
+✓ Required frontmatter fields present (title, description, version)
+✓ Version is valid semver
+✗ Missing: resources[] entries reference non-existent files
+  → resources/helper.sh not found
+
+Score: 71/100
+2 errors, 1 warning
+
+Fix errors before publishing.
+```
+
+## What is validated
+
+- Presence of `SKILL.md`
+- Required frontmatter fields
+- Valid semver version
+- Referenced resource files exist
+- Spec version compatibility
+- No forbidden content patterns

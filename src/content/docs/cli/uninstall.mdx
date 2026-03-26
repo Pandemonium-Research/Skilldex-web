@@ -1,0 +1,34 @@
+---
+title: "skillpm uninstall"
+description: "Remove an installed skill."
+section: "CLI Reference"
+order: 11
+---
+
+# skillpm uninstall
+
+Remove a skill from the specified scope.
+
+## Usage
+
+```bash
+skillpm uninstall <skill-name>
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--scope` | `global` | Scope to uninstall from: `global`, `shared`, or `project` |
+
+## Examples
+
+```bash
+# Uninstall from global scope
+skillpm uninstall forensics-agent
+
+# Uninstall from the current project
+skillpm uninstall forensics-agent --scope project
+```
+
+If the skill is installed in project scope, it is also removed from `skilldex.json`.

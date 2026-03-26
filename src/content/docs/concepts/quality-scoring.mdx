@@ -1,0 +1,60 @@
+---
+title: "Quality scoring"
+description: "How Skilldex calculates a skill's format conformance score."
+section: "Concepts"
+order: 23
+---
+
+# Quality scoring
+
+Every skill in the Skilldex registry has a **format conformance score** (0–100). This score measures how well the skill follows the Skilldex spec — it is not a measure of how useful or effective the skill is.
+
+## What the score measures
+
+The score is calculated by `skillpm validate` at publish time. It checks:
+
+| Check | Points |
+|---|---|
+| `SKILL.md` present | 10 |
+| All required frontmatter fields present | 20 |
+| Version is valid semver | 10 |
+| `specVersion` is current | 10 |
+| All referenced resources exist | 20 |
+| Description is at least 20 characters | 10 |
+| Tags present (at least one) | 5 |
+| License field present | 5 |
+| No broken markdown links | 10 |
+
+**Total: 100 points**
+
+## Score tiers
+
+| Score | Label |
+|---|---|
+| 90–100 | Excellent |
+| 75–89 | Good |
+| 50–74 | Fair |
+| Below 50 | Needs work |
+
+## Trust tiers
+
+The score is different from a skill's trust tier:
+
+- **Verified** — reviewed and published by the Skilldex team or a verified publisher
+- **Community** — published by any registered user; not individually reviewed
+
+A Community skill can have a score of 100. A Verified skill could theoretically have a lower score (though in practice Verified skills are required to meet a minimum threshold).
+
+## Improving your score
+
+Run `skillpm validate` locally to see a detailed breakdown:
+
+```bash
+skillpm validate ./my-skill
+```
+
+The output lists each check, its result, and specific guidance on how to fix failures.
+
+## Score disclaimer
+
+The format conformance score reflects spec compliance only. A high score does not guarantee that the skill will produce good results for your use case. Always review a skill's `SKILL.md` content before installing it.

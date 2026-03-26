@@ -1,0 +1,53 @@
+---
+title: "Packaging"
+description: "How skillpm packages skills into .skill archives for distribution."
+section: "Publishing Skills"
+order: 31
+---
+
+# Packaging
+
+Skilldex skills are distributed as `.skill` archives — gzip-compressed tar files. The `skillpm publish` command handles packaging automatically, but you can also create a dry-run package to inspect what will be published.
+
+## Dry run
+
+```bash
+skillpm publish --dry-run
+```
+
+This packages the skill and shows what would be published without actually uploading it:
+
+```text
+Packaging my-skill@1.0.0...
+
+Files included:
+  SKILL.md           (2.1 KB)
+  resources/helper.sh (0.4 KB)
+
+Archive: my-skill-1.0.0.skill (1.8 KB)
+Score: 94/100
+
+Would publish to registry. Run without --dry-run to publish.
+```
+
+## What is included
+
+The packager includes:
+
+- `SKILL.md`
+- All files listed in the `resources` frontmatter field
+- Nothing else
+
+Files not listed in `resources` are excluded. There is no `.skillignore` — if a file should not be in the archive, do not reference it in frontmatter.
+
+## Version bumping
+
+Before publishing a new version, update the `version` field in `SKILL.md` frontmatter. The registry rejects uploads where the version already exists.
+
+```bash
+# Check current version
+grep '^version:' SKILL.md
+
+# Edit and bump
+# version: "1.0.0" → "1.1.0"
+```

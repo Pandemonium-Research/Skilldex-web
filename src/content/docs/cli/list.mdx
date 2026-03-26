@@ -1,0 +1,47 @@
+---
+title: "skillpm list"
+description: "List all installed skills."
+section: "CLI Reference"
+order: 12
+---
+
+# skillpm list
+
+List all skills installed in the current environment.
+
+## Usage
+
+```bash
+skillpm list
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--scope` | all | Filter by scope: `global`, `shared`, or `project` |
+| `--json` | — | Output as JSON |
+
+## Examples
+
+```bash
+# List all installed skills
+skillpm list
+
+# List only project skills
+skillpm list --scope project
+
+# Machine-readable output
+skillpm list --json
+```
+
+## Example output
+
+```text
+Global skills (2):
+  forensics-agent  1.2.0  Verified  score: 94
+  pr-reviewer      0.9.1  Community score: 81
+
+Project skills (1):
+  test-generator   2.0.0  Community score: 87
+```

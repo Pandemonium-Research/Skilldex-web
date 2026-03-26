@@ -1,0 +1,83 @@
+---
+title: "Creating a skill"
+description: "How to create a new Skilldex skill from scratch."
+section: "Publishing Skills"
+order: 30
+---
+
+# Creating a skill
+
+This guide walks through creating a skill from scratch.
+
+## 1. Create the directory
+
+```bash
+mkdir my-skill
+cd my-skill
+```
+
+## 2. Create SKILL.md
+
+Create a `SKILL.md` file with the required frontmatter:
+
+```yaml
+---
+title: "My Skill"
+description: "A one-sentence description of what this skill does."
+version: "1.0.0"
+specVersion: "1.0"
+author: "your-github-username"
+license: "MIT"
+tags:
+  - your-tag
+---
+```
+
+## 3. Write the skill body
+
+After the frontmatter, write the skill instructions. This is the content Claude Code will use. Be specific and concrete.
+
+```markdown
+## Overview
+
+This skill helps Claude Code do X by providing Y approach.
+
+## When to use this skill
+
+Use this skill when you need to...
+
+## Instructions
+
+1. First, analyse the...
+2. Then, look for...
+3. Finally, output...
+
+## Example output format
+
+...
+```
+
+## 4. Add resources (optional)
+
+If your skill needs helper scripts or reference files, create a `resources/` directory and reference them in frontmatter:
+
+```yaml
+resources:
+  - path: resources/helper.sh
+    type: script
+  - path: resources/patterns.md
+    type: reference
+```
+
+## 5. Validate
+
+```bash
+skillpm validate
+```
+
+Fix any errors before proceeding. Aim for a score of 90+.
+
+## Next steps
+
+- [Packaging](/docs/publishing/packaging) — prepare your skill for publishing
+- [Publishing to the registry](/docs/publishing/publishing-to-registry) — submit to the registry
