@@ -92,7 +92,14 @@ export default async function SkillPage({ params }: Props) {
         {skill.author && (
           <div className="border border-surface-border rounded-lg p-4 bg-surface-raised">
             <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Author</p>
-            <p className="text-sm font-mono text-text-primary">{skill.author}</p>
+            <a
+              href={`https://github.com/${skill.author}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-mono text-term-green hover:underline"
+            >
+              @{skill.author}
+            </a>
           </div>
         )}
 
