@@ -16,6 +16,9 @@ export function Navbar() {
             <Link href="/docs/getting-started" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
               Docs
             </Link>
+            <Link href="/registry" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+              Registry
+            </Link>
             <Link href="/install" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
               Install
             </Link>
