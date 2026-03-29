@@ -55,8 +55,8 @@ const tabs = [
     label: 'npm',
     content: (
       <TabContent
-        prereq={<p>Node.js 18 or later. Check with <code className="font-mono text-term-cyan">node --version</code>.</p>}
-        installCmd="npm install -g skillpm"
+        prereq={<p>Node.js 20 or later. Check with <code className="font-mono text-term-cyan">node --version</code>.</p>}
+        installCmd="npm install -g skilldex-cli"
       />
     ),
   },
@@ -66,7 +66,7 @@ const tabs = [
     content: (
       <TabContent
         prereq={<p>Homebrew installed on macOS or Linux. Install at <a href="https://brew.sh" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">brew.sh</a>.</p>}
-        installCmd="brew install skilldex"
+        installCmd={"brew tap pandemonium-research/skilldex\nbrew install skilldex-cli"}
       />
     ),
   },
@@ -75,18 +75,8 @@ const tabs = [
     label: 'curl',
     content: (
       <TabContent
-        prereq={<p>macOS or Linux. The install script detects your OS and architecture and downloads the right binary automatically.</p>}
-        installCmd="curl -fsSL https://skilldex.dev/install.sh | sh"
-      />
-    ),
-  },
-  {
-    id: 'winget',
-    label: 'winget',
-    content: (
-      <TabContent
-        prereq={<p>Windows 10 (build 1709+) or Windows 11. winget is included by default.</p>}
-        installCmd="winget install skilldex"
+        prereq={<p>macOS or Linux with Node.js 20+ installed. The script checks your environment and installs via npm.</p>}
+        installCmd="curl -fsSL https://skilldex-web.vercel.app/install.sh | sh"
       />
     ),
   },
@@ -95,8 +85,8 @@ const tabs = [
     label: 'Scoop',
     content: (
       <TabContent
-        prereq={<p>Scoop installed on Windows. Install at <a href="https://scoop.sh" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">scoop.sh</a>.</p>}
-        installCmd="scoop install skilldex"
+        prereq={<p>Scoop and Node.js 20+ installed on Windows. Install Scoop at <a href="https://scoop.sh" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">scoop.sh</a>.</p>}
+        installCmd={"scoop bucket add skilldex https://github.com/Pandemonium-Research/scoop-skilldex\nscoop install skilldex-cli"}
       />
     ),
   },

@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   },
   description:
     'Install, share, and discover Claude Code skills. Skilldex is the package manager for AI agent skills.',
-  metadataBase: new URL('https://skilldex.dev'),
+  metadataBase: new URL('https://skilldex-web.vercel.app'),
   openGraph: {
     title: 'Skilldex — The skill package manager for AI agents',
     description:
       'Install, share, and discover Claude Code skills. Skilldex is the package manager for AI agent skills.',
-    url: 'https://skilldex.dev',
+    url: 'https://skilldex-web.vercel.app',
     siteName: 'Skilldex',
     locale: 'en_US',
     type: 'website',

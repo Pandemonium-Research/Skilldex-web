@@ -20,7 +20,7 @@ export function Hero() {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10">
           <div className="w-full sm:w-80">
-            <CodeBlock code="npm install -g skillpm" language="bash" />
+            <CodeBlock code="npm install -g skilldex-cli" language="bash" />
           </div>
           <div className="flex items-center gap-4">
             <Link

@@ -7,8 +7,8 @@ const tabs = [
     label: 'npm',
     content: (
       <div className="space-y-1.5">
-        <p className="text-xs text-text-muted mb-3">Requires Node.js 18+</p>
-        <CodeBlock code="npm install -g skillpm" language="bash" />
+        <p className="text-xs text-text-muted mb-3">Requires Node.js 20+</p>
+        <CodeBlock code="npm install -g skilldex-cli" language="bash" />
       </div>
     ),
   },
@@ -18,7 +18,7 @@ const tabs = [
     content: (
       <div className="space-y-1.5">
         <p className="text-xs text-text-muted mb-3">macOS and Linux</p>
-        <CodeBlock code="brew install skilldex" language="bash" />
+        <CodeBlock code={"brew tap pandemonium-research/skilldex\nbrew install skilldex-cli"} language="bash" />
       </div>
     ),
   },
@@ -27,18 +27,8 @@ const tabs = [
     label: 'curl',
     content: (
       <div className="space-y-1.5">
-        <p className="text-xs text-text-muted mb-3">macOS and Linux — detects OS and architecture automatically</p>
-        <CodeBlock code="curl -fsSL https://skilldex.dev/install.sh | sh" language="bash" />
-      </div>
-    ),
-  },
-  {
-    id: 'winget',
-    label: 'winget',
-    content: (
-      <div className="space-y-1.5">
-        <p className="text-xs text-text-muted mb-3">Windows 10/11</p>
-        <CodeBlock code="winget install skilldex" language="bash" />
+        <p className="text-xs text-text-muted mb-3">macOS and Linux — requires Node.js 20+</p>
+        <CodeBlock code="curl -fsSL https://skilldex-web.vercel.app/install.sh | sh" language="bash" />
       </div>
     ),
   },
@@ -47,8 +37,8 @@ const tabs = [
     label: 'Scoop',
     content: (
       <div className="space-y-1.5">
-        <p className="text-xs text-text-muted mb-3">Windows via Scoop</p>
-        <CodeBlock code="scoop install skilldex" language="bash" />
+        <p className="text-xs text-text-muted mb-3">Windows — requires Node.js 20+</p>
+        <CodeBlock code={"scoop bucket add skilldex https://github.com/Pandemonium-Research/scoop-skilldex\nscoop install skilldex-cli"} language="bash" />
       </div>
     ),
   },

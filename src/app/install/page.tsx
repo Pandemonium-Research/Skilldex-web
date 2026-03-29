@@ -5,7 +5,7 @@ export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
   title: 'Install',
-  description: 'Install the Skilldex CLI on macOS, Linux, or Windows using npm, Homebrew, curl, winget, or Scoop.',
+  description: 'Install the Skilldex CLI on macOS, Linux, or Windows using npm, Homebrew, curl, or Scoop.',
 }
 
 export default function InstallPage() {
