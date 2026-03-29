@@ -157,7 +157,7 @@ skilldex-web/
 ### 3. Installation Page
 
 - **Platform Tabs** — macOS, Linux, Windows installation methods
-- **Multiple Package Managers** — npm, Homebrew, curl, winget, Scoop
+- **Multiple Package Managers** — npm, Homebrew (via `brew tap pandemonium-research/skilldex`), winget, Scoop
 - **Clear Instructions** — Step-by-step setup guides
 
 ### 4. UI Components
@@ -201,8 +201,8 @@ The documentation system automatically:
 
 ```bash
 # Clone the repository
-git clone https://github.com/anthropics/skilldex
-cd skilldex-web
+git clone https://github.com/Pandemonium-Research/Skilldex-web.git
+cd Skilldex-web
 
 # Install dependencies
 npm install
@@ -299,9 +299,10 @@ Skills declare which Skilldex specification version they conform to, ensuring fo
 
 ## 🔗 Related Repositories
 
-- **CLI Tool** — The `skillpm` command-line interface
-- **Registry Backend** — The skill registry API and storage
-- **Spec Repository** — The formal Skilldex specification
+- **[CLI Tool](https://github.com/Pandemonium-Research/Skilldex)** — The `skillpm` command-line interface (`npm install -g skilldex-cli`)
+- **[Homebrew Tap](https://github.com/Pandemonium-Research/homebrew-skilldex)** — `brew tap pandemonium-research/skilldex && brew install skilldex-cli`
+- **[npm Package](https://www.npmjs.com/package/skilldex-cli)** — Published package on npm
+- **Registry Backend** — The skill registry API and storage (coming soon)
 
 ## 🤝 Contributing
 
