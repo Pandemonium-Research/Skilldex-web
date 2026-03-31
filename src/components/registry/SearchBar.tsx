@@ -10,21 +10,24 @@ type Props = {
   defaultTier?: string
   defaultSort?: string
   defaultLimit?: number
+  defaultTab?: string
 }
 
-export function SearchBar({ defaultQ, defaultTier, defaultSort, defaultLimit }: Props) {
+export function SearchBar({ defaultQ, defaultTier, defaultSort, defaultLimit, defaultTab }: Props) {
   const router = useRouter()
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function pushParams(updates: Record<string, string | undefined>) {
     const params = new URLSearchParams()
     const merged = {
+      tab: defaultTab,
       q: defaultQ,
       tier: defaultTier,
       sort: defaultSort,
       limit: defaultLimit ? String(defaultLimit) : undefined,
       ...updates,
     }
+    if (merged.tab && merged.tab !== 'skills') params.set('tab', merged.tab)
     if (merged.q) params.set('q', merged.q)
     if (merged.tier) params.set('tier', merged.tier)
     if (merged.sort && merged.sort !== 'installs') params.set('sort', merged.sort)
@@ -46,7 +49,7 @@ export function SearchBar({ defaultQ, defaultTier, defaultSort, defaultLimit }: 
         type="text"
         defaultValue={defaultQ}
         onChange={handleSearch}
-        placeholder="Search skills..."
+        placeholder={defaultTab === 'skillsets' ? 'Search skillsets...' : 'Search skills...'}
         className="flex-1 bg-surface-raised border border-surface-border rounded px-3 py-2 text-sm font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-term-green transition-colors"
       />
 

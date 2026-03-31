@@ -1,9 +1,10 @@
 import { SearchBar } from '@/components/registry/SearchBar'
 import { SkillCard } from '@/components/registry/SkillCard'
-import { searchSkills } from '@/lib/registry'
+import { SkillsetCard } from '@/components/registry/SkillsetCard'
+import { searchSkills, searchSkillsets } from '@/lib/registry'
 
 type Props = {
-  searchParams: { q?: string; tier?: string; sort?: string; offset?: string; limit?: string }
+  searchParams: { q?: string; tier?: string; sort?: string; offset?: string; limit?: string; tab?: string }
 }
 
 export const metadata = {
@@ -14,6 +15,7 @@ export const metadata = {
 function buildHref(searchParams: Props['searchParams'], updates: Partial<Props['searchParams']>) {
   const merged = { ...searchParams, ...updates }
   const params = new URLSearchParams()
+  if (merged.tab && merged.tab !== 'skills') params.set('tab', merged.tab)
   if (merged.q) params.set('q', merged.q)
   if (merged.tier) params.set('tier', merged.tier)
   if (merged.sort && merged.sort !== 'installs') params.set('sort', merged.sort)
@@ -23,16 +25,25 @@ function buildHref(searchParams: Props['searchParams'], updates: Partial<Props['
 }
 
 export default async function RegistryPage({ searchParams }: Props) {
+  const tab = searchParams.tab === 'skillsets' ? 'skillsets' : 'skills'
   const limit = Math.min(Math.max(Number(searchParams.limit) || 20, 1), 100)
   const offset = Math.max(Number(searchParams.offset) || 0, 0)
 
-  const { skills, total } = await searchSkills({
+  const searchOpts = {
     q: searchParams.q,
     tier: searchParams.tier,
     sort: searchParams.sort || 'installs',
     limit,
     offset,
-  })
+  }
+
+  const [{ skills, total: skillTotal }, { skillsets, total: skillsetTotal }] = await Promise.all([
+    tab === 'skills' ? searchSkills(searchOpts) : Promise.resolve({ skills: [], total: 0 }),
+    tab === 'skillsets' ? searchSkillsets(searchOpts) : Promise.resolve({ skillsets: [], total: 0 }),
+  ])
+
+  const items = tab === 'skills' ? skills : skillsets
+  const total = tab === 'skills' ? skillTotal : skillsetTotal
 
   const totalPages = Math.ceil(total / limit)
   const currentPage = Math.floor(offset / limit) + 1
@@ -53,15 +64,38 @@ export default async function RegistryPage({ searchParams }: Props) {
     return pages
   }
 
+  const tabHref = (t: string) => buildHref({ ...searchParams, tab: t }, { offset: '0' })
+  const noun = tab === 'skillsets' ? 'skillset' : 'skill'
+  const publishCmd = tab === 'skillsets'
+    ? 'skillpm skillset publish'
+    : 'skillpm publish'
+
   return (
     <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-8">
+      <div className="mb-6">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-2">
           Registry
         </p>
         <h1 className="text-2xl font-mono font-semibold text-text-primary">
-          Browse skills
+          Browse {tab}
         </h1>
+      </div>
+
+      {/* Tab switcher */}
+      <div className="flex gap-1 border-b border-surface-border mb-6">
+        {(['skills', 'skillsets'] as const).map((t) => (
+          <a
+            key={t}
+            href={tabHref(t)}
+            className={`text-xs font-mono px-4 py-2 -mb-px border-b-2 transition-colors capitalize ${
+              tab === t
+                ? 'border-term-green text-text-primary'
+                : 'border-transparent text-text-muted hover:text-text-secondary'
+            }`}
+          >
+            {t}
+          </a>
+        ))}
       </div>
 
       <div className="mb-6">
@@ -70,25 +104,26 @@ export default async function RegistryPage({ searchParams }: Props) {
           defaultTier={searchParams.tier}
           defaultSort={searchParams.sort}
           defaultLimit={limit}
+          defaultTab={tab}
         />
       </div>
 
-      {skills.length === 0 ? (
+      {items.length === 0 ? (
         <div className="border border-surface-border rounded-lg px-6 py-12 text-center">
           <p className="text-sm font-mono text-text-secondary mb-2">
             {searchParams.q || searchParams.tier
-              ? 'No skills match your search.'
-              : 'No skills published yet.'}
+              ? `No ${noun}s match your search.`
+              : `No ${noun}s published yet.`}
           </p>
           <p className="text-xs text-text-muted font-mono">
-            Be the first — run <code className="text-term-green">skillpm publish</code> from your skill folder.
+            Be the first — run <code className="text-term-green">{publishCmd}</code> from your {noun} folder.
           </p>
         </div>
       ) : (
         <>
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono text-text-muted">
-              Showing {firstItem}–{lastItem} of {total} skill{total !== 1 ? 's' : ''}
+              Showing {firstItem}–{lastItem} of {total} {noun}{total !== 1 ? 's' : ''}
               {searchParams.q ? ` for "${searchParams.q}"` : ''}
             </p>
             {totalPages > 1 && (
@@ -99,9 +134,10 @@ export default async function RegistryPage({ searchParams }: Props) {
           </div>
 
           <div className="divide-y divide-surface-border border border-surface-border rounded-lg overflow-hidden">
-            {skills.map((skill) => (
-              <SkillCard key={skill.name} skill={skill} />
-            ))}
+            {tab === 'skills'
+              ? skills.map((skill) => <SkillCard key={skill.name} skill={skill} />)
+              : skillsets.map((ss) => <SkillsetCard key={ss.name} skillset={ss} />)
+            }
           </div>
 
           {totalPages > 1 && (
