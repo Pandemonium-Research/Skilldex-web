@@ -50,7 +50,6 @@ export default async function RegistryPage({ searchParams }: Props) {
   const firstItem = total === 0 ? 0 : offset + 1
   const lastItem = Math.min(offset + limit, total)
 
-  // Build page number links — show up to 7 around current page
   function getPageNumbers() {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
     const pages: (number | '...')[] = []
@@ -66,31 +65,35 @@ export default async function RegistryPage({ searchParams }: Props) {
 
   const tabHref = (t: string) => buildHref({ ...searchParams, tab: t }, { offset: '0' })
   const noun = tab === 'skillsets' ? 'skillset' : 'skill'
-  const publishCmd = tab === 'skillsets'
-    ? 'skillpm skillset publish'
-    : 'skillpm publish'
+  const publishCmd = tab === 'skillsets' ? 'skillpm skillset publish' : 'skillpm publish'
 
   return (
-    <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-6">
+    <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
+      {/* Page header */}
+      <div className="mb-8">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-2">
-          Registry
+          skilldex / registry
         </p>
-        <h1 className="text-2xl font-mono font-semibold text-text-primary">
+        <h1 className="text-2xl font-mono font-semibold text-text-primary mb-1">
           Browse {tab}
         </h1>
+        <p className="text-sm text-text-secondary">
+          {total > 0
+            ? `${total} ${noun}${total !== 1 ? 's' : ''} available${searchParams.q ? ` for "${searchParams.q}"` : ''}`
+            : `Discover and install Claude Code ${noun}s from the community`}
+        </p>
       </div>
 
-      {/* Tab switcher */}
-      <div className="flex gap-1 border-b border-surface-border mb-6">
+      {/* Pill tab switcher */}
+      <div className="inline-flex items-center gap-1 bg-surface-raised border border-surface-border rounded-lg p-1 mb-6">
         {(['skills', 'skillsets'] as const).map((t) => (
           <a
             key={t}
             href={tabHref(t)}
-            className={`text-xs font-mono px-4 py-2 -mb-px border-b-2 transition-colors capitalize ${
+            className={`text-xs font-mono px-4 py-1.5 rounded-md transition-all capitalize ${
               tab === t
-                ? 'border-term-green text-text-primary'
-                : 'border-transparent text-text-muted hover:text-text-secondary'
+                ? 'bg-surface-overlay text-text-primary border border-surface-border'
+                : 'text-text-muted hover:text-text-secondary'
             }`}
           >
             {t}
@@ -98,6 +101,7 @@ export default async function RegistryPage({ searchParams }: Props) {
         ))}
       </div>
 
+      {/* Search */}
       <div className="mb-6">
         <SearchBar
           defaultQ={searchParams.q}
@@ -109,21 +113,27 @@ export default async function RegistryPage({ searchParams }: Props) {
       </div>
 
       {items.length === 0 ? (
-        <div className="border border-surface-border rounded-lg px-6 py-12 text-center">
+        <div className="border border-surface-border rounded-lg px-6 py-16 text-center bg-surface-raised/50">
+          <div className="w-12 h-12 rounded-full bg-surface-overlay border border-surface-border flex items-center justify-center mx-auto mb-4">
+            <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+          </div>
           <p className="text-sm font-mono text-text-secondary mb-2">
             {searchParams.q || searchParams.tier
               ? `No ${noun}s match your search.`
               : `No ${noun}s published yet.`}
           </p>
           <p className="text-xs text-text-muted font-mono">
-            Be the first — run <code className="text-term-green">{publishCmd}</code> from your {noun} folder.
+            Be the first — run <code className="text-text-secondary bg-surface-overlay px-1.5 py-0.5 rounded">{publishCmd}</code> from your {noun} folder.
           </p>
         </div>
       ) : (
         <>
+          {/* Results info */}
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono text-text-muted">
-              Showing {firstItem}–{lastItem} of {total} {noun}{total !== 1 ? 's' : ''}
+              {firstItem}–{lastItem} of {total} {noun}{total !== 1 ? 's' : ''}
               {searchParams.q ? ` for "${searchParams.q}"` : ''}
             </p>
             {totalPages > 1 && (
@@ -133,6 +143,7 @@ export default async function RegistryPage({ searchParams }: Props) {
             )}
           </div>
 
+          {/* Cards list */}
           <div className="divide-y divide-surface-border border border-surface-border rounded-lg overflow-hidden">
             {tab === 'skills'
               ? skills.map((skill) => <SkillCard key={skill.name} skill={skill} />)
@@ -140,6 +151,7 @@ export default async function RegistryPage({ searchParams }: Props) {
             }
           </div>
 
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-6">
               <a
@@ -147,10 +159,10 @@ export default async function RegistryPage({ searchParams }: Props) {
                   ? buildHref(searchParams, { offset: String((currentPage - 2) * limit) })
                   : undefined}
                 aria-disabled={currentPage === 1}
-                className={`text-xs font-mono transition-colors ${
+                className={`text-xs font-mono px-3 py-1.5 rounded-lg border transition-colors ${
                   currentPage === 1
-                    ? 'text-text-muted pointer-events-none'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'border-surface-border text-text-muted pointer-events-none opacity-40'
+                    : 'border-surface-border text-text-secondary hover:text-text-primary bg-surface-raised'
                 }`}
               >
                 ← Previous
@@ -159,15 +171,15 @@ export default async function RegistryPage({ searchParams }: Props) {
               <div className="flex items-center gap-1">
                 {getPageNumbers().map((p, i) =>
                   p === '...' ? (
-                    <span key={`ellipsis-${i}`} className="text-xs font-mono text-text-muted px-1">…</span>
+                    <span key={`ellipsis-${i}`} className="text-xs font-mono text-text-muted px-2">…</span>
                   ) : (
                     <a
                       key={p}
                       href={buildHref(searchParams, { offset: String((p - 1) * limit) })}
-                      className={`text-xs font-mono w-7 h-7 flex items-center justify-center rounded transition-colors ${
+                      className={`text-xs font-mono w-8 h-8 flex items-center justify-center rounded-lg border transition-colors ${
                         p === currentPage
-                          ? 'bg-surface-overlay text-text-primary border border-surface-border'
-                          : 'text-text-muted hover:text-text-primary'
+                          ? 'bg-surface-overlay text-text-primary border-surface-border'
+                          : 'border-transparent text-text-muted hover:text-text-primary hover:border-surface-border'
                       }`}
                     >
                       {p}
@@ -181,10 +193,10 @@ export default async function RegistryPage({ searchParams }: Props) {
                   ? buildHref(searchParams, { offset: String(currentPage * limit) })
                   : undefined}
                 aria-disabled={currentPage === totalPages}
-                className={`text-xs font-mono transition-colors ${
+                className={`text-xs font-mono px-3 py-1.5 rounded-lg border transition-colors ${
                   currentPage === totalPages
-                    ? 'text-text-muted pointer-events-none'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'border-surface-border text-text-muted pointer-events-none opacity-40'
+                    : 'border-surface-border text-text-secondary hover:text-text-primary bg-surface-raised'
                 }`}
               >
                 Next →
