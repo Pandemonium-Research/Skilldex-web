@@ -1,0 +1,94 @@
+{
+  "name": "warm",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#1c1b16",
+    "editor.foreground": "#ccc8be"
+  },
+  "tokenColors": [
+    {
+      "name": "Comment",
+      "scope": ["comment", "punctuation.definition.comment"],
+      "settings": { "foreground": "#5a5650" }
+    },
+    {
+      "name": "String",
+      "scope": [
+        "string",
+        "string.quoted.double",
+        "string.quoted.single",
+        "string.template"
+      ],
+      "settings": { "foreground": "#b39a5e" }
+    },
+    {
+      "name": "Number / constant",
+      "scope": [
+        "constant.numeric",
+        "constant.language.boolean",
+        "constant.language.null",
+        "constant.language.undefined"
+      ],
+      "settings": { "foreground": "#b39a5e" }
+    },
+    {
+      "name": "Keyword / storage",
+      "scope": [
+        "keyword",
+        "keyword.control",
+        "keyword.operator",
+        "storage.type",
+        "storage.modifier"
+      ],
+      "settings": { "foreground": "#7a756b" }
+    },
+    {
+      "name": "Type / class name",
+      "scope": [
+        "entity.name.type",
+        "entity.name.class",
+        "support.type",
+        "support.class"
+      ],
+      "settings": { "foreground": "#7a756b" }
+    },
+    {
+      "name": "Punctuation / operator",
+      "scope": [
+        "punctuation",
+        "keyword.operator.assignment",
+        "keyword.operator.arithmetic",
+        "keyword.operator.relational",
+        "keyword.operator.logical"
+      ],
+      "settings": { "foreground": "#7a756b" }
+    },
+    {
+      "name": "Shell / built-in function",
+      "scope": [
+        "support.function.builtin",
+        "support.function.builtin.shell",
+        "entity.name.function"
+      ],
+      "settings": { "foreground": "#ccc8be" }
+    },
+    {
+      "name": "Tag",
+      "scope": ["entity.name.tag"],
+      "settings": { "foreground": "#7a756b" }
+    },
+    {
+      "name": "Attribute / property name",
+      "scope": [
+        "entity.other.attribute-name",
+        "support.type.property-name"
+      ],
+      "settings": { "foreground": "#7a756b" }
+    },
+    {
+      "name": "Decorator",
+      "scope": ["meta.decorator", "punctuation.decorator"],
+      "settings": { "foreground": "#7a756b" }
+    }
+  ]
+}

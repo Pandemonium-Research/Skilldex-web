@@ -1,5 +1,8 @@
-import { getSingletonHighlighter } from 'shiki'
+import { getSingletonHighlighter, type ThemeRegistrationRaw } from 'shiki'
 import { CopyButton } from './CopyButton'
+import warmThemeJson from '@/lib/shiki-warm-theme.json'
+
+const warmTheme = warmThemeJson as unknown as ThemeRegistrationRaw
 
 type CodeBlockProps = {
   code: string
@@ -9,19 +12,19 @@ type CodeBlockProps = {
 
 export async function CodeBlock({ code, language = 'bash', filename }: CodeBlockProps) {
   const highlighter = await getSingletonHighlighter({
-    themes: ['github-dark'],
+    themes: [warmTheme],
     langs: ['bash', 'typescript', 'javascript', 'json', 'yaml', 'shell', 'text', 'markdown'],
   })
 
   const html = highlighter.codeToHtml(code.trim(), {
     lang: language,
-    theme: 'github-dark',
+    theme: 'warm',
   })
 
   return (
-    <div className="relative rounded-md overflow-hidden border border-surface-border bg-[#0d1117]">
+    <div className="relative rounded-md overflow-hidden border border-surface-border bg-surface-raised">
       {filename && (
-        <div className="flex items-center gap-2 px-3 py-2 border-b border-surface-border bg-surface-raised">
+        <div className="flex items-center gap-2 px-3 py-2 border-b border-surface-border bg-surface-overlay">
           <span className="text-xs font-mono text-text-muted">{filename}</span>
         </div>
       )}
