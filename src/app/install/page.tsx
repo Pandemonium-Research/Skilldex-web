@@ -17,7 +17,7 @@ export default function InstallPage() {
         </h1>
         <p className="text-text-secondary text-lg">
           Choose your platform and get the{' '}
-          <code className="font-mono text-sm text-term-cyan bg-surface-overlay px-1.5 py-0.5 rounded">
+          <code className="font-mono text-sm text-brand bg-surface-overlay px-1.5 py-0.5 rounded">
             skillpm
           </code>{' '}
           CLI installed in under 60 seconds.

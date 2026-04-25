@@ -14,21 +14,21 @@ function TabContent({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-mono font-semibold text-brand uppercase tracking-[0.14em] mb-2">
           Prerequisites
         </h3>
         <div className="text-sm text-text-secondary">{prereq}</div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-mono font-semibold text-brand uppercase tracking-[0.14em] mb-2">
           Install
         </h3>
         <CodeBlock code={installCmd} language={language} />
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
+        <h3 className="text-xs font-mono font-semibold text-brand uppercase tracking-[0.14em] mb-2">
           Verify
         </h3>
         <CodeBlock code="skillpm --version" language="bash" />
@@ -55,7 +55,7 @@ const tabs = [
     label: 'npm',
     content: (
       <TabContent
-        prereq={<p>Node.js 20 or later. Check with <code className="font-mono text-term-cyan">node --version</code>.</p>}
+        prereq={<p>Node.js 20 or later. Check with <code className="font-mono text-brand">node --version</code>.</p>}
         installCmd="npm install -g skilldex-cli"
       />
     ),
