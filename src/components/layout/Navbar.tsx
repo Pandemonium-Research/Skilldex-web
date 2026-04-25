@@ -2,26 +2,27 @@ import Link from 'next/link'
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-surface-border bg-surface-base/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-surface-border bg-surface-base/70 backdrop-blur-[12px]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between">
-          <Link
-            href="/"
-            className="font-mono text-base font-semibold text-text-primary hover:text-brand transition-colors"
-          >
-            skilldex
-          </Link>
+        <div className="flex h-[60px] items-center justify-between">
+          {/* Logo + nav */}
+          <div className="flex items-center gap-7">
+            <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div className="w-6 h-6 rounded-[7px] bg-gradient-to-br from-brand to-brand-dim flex items-center justify-center text-[13px] font-bold text-[#1a0e02] shadow-[0_0_12px_rgba(255,138,31,0.4),inset_0_1px_0_rgba(255,255,255,0.25)] flex-none">
+                S
+              </div>
+              <span className="text-[15px] font-semibold text-text-primary tracking-[-0.01em]">Skilldex</span>
+            </Link>
 
-          <nav className="flex items-center gap-6">
-            <Link href="/docs/getting-started" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-              Docs
-            </Link>
-            <Link href="/registry" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-              Registry
-            </Link>
-            <Link href="/install" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-              Install
-            </Link>
+            <nav className="hidden sm:flex items-center gap-6 text-[13.5px] text-text-secondary">
+              <Link href="/registry" className="hover:text-text-primary transition-colors">Registry</Link>
+              <Link href="/docs/getting-started" className="hover:text-text-primary transition-colors">Docs</Link>
+              <Link href="/install" className="hover:text-text-primary transition-colors">Install</Link>
+            </nav>
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-3">
             <a
               href="https://github.com/Pandemonium-Research/Skilldex"
               target="_blank"
@@ -33,7 +34,13 @@ export function Navbar() {
                 <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
               </svg>
             </a>
-          </nav>
+            <Link
+              href="/install"
+              className="text-[13px] font-semibold px-3.5 py-[7px] rounded-[7px] bg-brand text-[#1a0e02] shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_0_16px_rgba(255,138,31,0.3)] hover:bg-brand-dim transition-colors"
+            >
+              Get the CLI
+            </Link>
+          </div>
         </div>
       </div>
     </header>
