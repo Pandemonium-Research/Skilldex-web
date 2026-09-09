@@ -31,9 +31,25 @@ export function SkillsetCard({ skillset }: { skillset: RegistrySkillset }) {
         {skillset.skill_count} skills
       </span>
 
+      {/* Coherence. Carries its own label where the score does not: two unlabelled numbers in a
+          row read as one measurement, and these are independent dimensions. Hidden entirely when
+          no members were checked — there is nothing to report, which is not a score of zero. */}
+      {skillset.coherence !== null && skillset.coherence.members_checked > 0 && (
+        <span
+          className="text-xs font-mono text-text-secondary flex-none"
+          title={
+            skillset.coherence.declared_conventions > 0
+              ? `Members agreeing with the ${skillset.coherence.declared_conventions} convention(s) this skillset declares`
+              : 'This skillset declares no shared conventions; members were checked for contradictions only'
+          }
+        >
+          {skillset.coherence.members_coherent}/{skillset.coherence.members_checked} coherent
+        </span>
+      )}
+
       {/* Score */}
       {skillset.score !== null && (
-        <span className="text-xs font-mono text-text-secondary flex-none">
+        <span className="text-xs font-mono text-text-secondary flex-none" title="Format conformance score out of 100">
           {skillset.score}
         </span>
       )}

@@ -21,6 +21,30 @@ export type RegistrySkill = {
   published_at: string
 }
 
+/**
+ * How well a skillset's members agree with each other.
+ *
+ * The second dimension beside `score`, and independent of it: `score` is conformance — the
+ * skillset is well-formed — while this is coherence, whether the skills bundled together
+ * actually agree on the conventions the skillset declares. A perfectly-formatted skillset can
+ * bundle skills that contradict one another, and it would score 100 with members disagreeing.
+ *
+ * `declared_conventions` is what makes the fraction interpretable and must be shown with it.
+ * With conventions declared, "4/4" means every member restated them consistently. With none
+ * declared there is nothing to restate, so it only means no member contradicted another — much
+ * weaker evidence for the same-looking number.
+ */
+export type SkillsetCoherence = {
+  members_checked: number
+  members_coherent: number
+  /** null when no members were checked. Not zero — there is nothing to report, not a failure. */
+  pct: number | null
+  pass_count: number
+  warn_count: number
+  error_count: number
+  declared_conventions: number
+}
+
 export type RegistrySkillset = {
   name: string
   description: string
@@ -34,6 +58,8 @@ export type RegistrySkillset = {
   install_count: number
   published_at: string
   skills: Array<{ name: string; source_url: string }>
+  /** null for a skillset published before the registry recorded coherence. */
+  coherence: SkillsetCoherence | null
 }
 
 // Search options matching GET /skills and GET /skillsets query params

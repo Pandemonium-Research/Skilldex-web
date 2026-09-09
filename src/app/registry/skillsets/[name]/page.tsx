@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/Badge'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { getSkillset } from '@/lib/registry'
+import type { SkillsetCoherence } from '@/types/registry'
 
 type Props = { params: { name: string } }
 
@@ -15,14 +16,51 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
+function barColor(pct: number) {
+  return pct >= 80 ? 'bg-term-green' : pct >= 50 ? 'bg-term-yellow' : 'bg-term-red'
+}
+
 function ScoreBar({ score }: { score: number }) {
-  const color = score >= 80 ? 'bg-term-green' : score >= 50 ? 'bg-term-yellow' : 'bg-term-red'
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 bg-surface-base rounded-full h-1.5 overflow-hidden border border-surface-border">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${score}%` }} />
+        <div className={`h-full rounded-full ${barColor(score)}`} style={{ width: `${score}%` }} />
       </div>
       <span className="text-xs font-mono text-text-muted w-12 text-right">{score}/100</span>
+    </div>
+  )
+}
+
+/**
+ * Coherence, shown as the fraction it is rather than as a second score out of 100.
+ *
+ * Deliberately not made to look interchangeable with the format score: they measure independent
+ * things, and rendering "100/100" twice would invite reading them as one result confirmed twice.
+ *
+ * The convention count carries the meaning, so it is not optional detail. "4/4 members" against
+ * declared conventions says every member restated them consistently. The same fraction with none
+ * declared says only that no member contradicted another — a much weaker claim behind an
+ * identical-looking number.
+ */
+function CoherenceBar({ coherence }: { coherence: SkillsetCoherence }) {
+  const pct = coherence.pct ?? 0
+  const declared = coherence.declared_conventions
+
+  return (
+    <div>
+      <div className="flex items-center gap-3">
+        <div className="flex-1 bg-surface-base rounded-full h-1.5 overflow-hidden border border-surface-border">
+          <div className={`h-full rounded-full ${barColor(pct)}`} style={{ width: `${pct}%` }} />
+        </div>
+        <span className="text-xs font-mono text-text-muted w-24 text-right">
+          {coherence.members_coherent}/{coherence.members_checked} members
+        </span>
+      </div>
+      <p className="text-xs font-mono text-text-muted mt-2">
+        {declared > 0
+          ? `Checked against ${declared} declared convention${declared === 1 ? '' : 's'}`
+          : 'No shared conventions declared — members checked for contradictions only'}
+      </p>
     </div>
   )
 }
@@ -79,6 +117,18 @@ export default async function SkillsetPage({ params }: Props) {
               Format score
             </p>
             <ScoreBar score={skillset.score} />
+          </div>
+        )}
+
+        {/* Only when members were actually checked. A skillset with none has no coherence to
+            report, which is not the same as scoring zero — rendering an empty red bar would
+            accuse it of something it was never measured for. */}
+        {skillset.coherence !== null && skillset.coherence.members_checked > 0 && (
+          <div className="border border-surface-border rounded-lg p-4 bg-surface-raised col-span-2">
+            <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">
+              Coherence
+            </p>
+            <CoherenceBar coherence={skillset.coherence} />
           </div>
         )}
 
