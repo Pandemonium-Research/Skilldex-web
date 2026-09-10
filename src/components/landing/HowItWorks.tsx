@@ -4,8 +4,10 @@ const steps = [
   {
     step: '1',
     title: 'Install the CLI',
-    body: 'One command — npm, Homebrew, curl, or winget.',
-    code: 'npm install -g skillpm',
+    body: 'One command — npm, Homebrew, curl, or Scoop.',
+    // The package is skilldex-cli; `skillpm` is only the command it installs. On npm, `skillpm` is
+    // an unrelated package belonging to someone else.
+    code: 'npm install -g skilldex-cli',
   },
   {
     step: '2',
