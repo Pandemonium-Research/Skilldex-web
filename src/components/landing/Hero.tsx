@@ -1,7 +1,10 @@
 import Link from 'next/link'
 import { CommandPaletteMock } from './CommandPaletteMock'
+import { getLatestCliVersion } from '@/lib/cli-version'
 
-export function Hero() {
+export async function Hero() {
+  const version = await getLatestCliVersion()
+
   return (
     <section className="py-24 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -12,7 +15,7 @@ export function Hero() {
             {/* Amber version badge */}
             <div className="inline-flex items-center gap-2.5 mb-7 px-3 py-1.5 rounded-full border border-brand/20 bg-brand/[0.06] text-brand text-xs font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-brand shadow-[0_0_6px_#ff8a1f] flex-none" aria-hidden="true" />
-              Skilldex v1.0 is here
+              {version ? `Skilldex v${version} is here` : 'Skilldex is here'}
             </div>
 
             <h1 className="text-5xl sm:text-[68px] font-semibold text-text-primary leading-[1.04] tracking-[-0.035em] mb-6">
