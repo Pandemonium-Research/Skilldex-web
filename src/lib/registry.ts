@@ -22,7 +22,7 @@ const EMPTY_LIST = {
   has_more: false,
   limit: 20,
   offset: 0,
-  max_offset: 10_000,
+  max_offset: 1_000,
 }
 
 function buildQuery(options: SearchOptions): string {
