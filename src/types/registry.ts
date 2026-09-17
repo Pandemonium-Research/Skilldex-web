@@ -79,8 +79,8 @@ export type SearchOptions = {
  * Paginated list envelope.
  *
  * `total_relation` is the important field: "eq" means `total` is exact, "gte" means the count
- * stopped at the cap and there are at least that many. Render "gte" as "10,000+", never as a
- * bare 10000 — see COUNTING_AT_SCALE.md in the registry repo.
+ * stopped at the cap and there are at least that many. Render "gte" as "1,000+" (the cap since the
+ * registry's D27), never as a bare 1000 — see COUNTING_AT_SCALE.md in the registry repo.
  */
 export type ListEnvelope = {
   total: number
