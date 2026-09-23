@@ -8,7 +8,7 @@ type Props = {
 
 export const metadata = {
   title: 'Skillsets — Skilldex Registry',
-  description: 'Browse and search Claude skillset packages — curated bundles of skills for specific agent use-cases',
+  description: 'Browse and search Claude skillset packages — bundles of skills for specific agent use-cases',
 }
 
 function buildHref(searchParams: Props['searchParams'], updates: Partial<Props['searchParams']>) {

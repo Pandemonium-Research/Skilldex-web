@@ -83,17 +83,14 @@ export default async function SkillPage({ params }: Props) {
       {/* Install */}
       <div className="border border-surface-border rounded-lg p-4 mb-6 bg-surface-raised">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Install</p>
-        {/* Deliberately the BARE name, not owner/name. The published CLI does
-            encodeURIComponent(name) before building the install URL, so a qualified name
-            becomes owner%2Fname and may resolve against the legacy single-segment route
-            instead. Moving the page to an owner-scoped URL and changing the install command
-            are independent changes; only the first is done. Qualify this once an end-to-end
-            test against the deployed API confirms the CLI handles it. */}
+        {/* The qualified name: a bare one is often claimed by several owners and stops at the CLI's
+            which-owner prompt. skilldex-cli reaches owner/name since 1.4.0 (encodeSkillPath keeps
+            the slash); before that it escaped it to %2F and 404'd. */}
         <div className="flex items-center gap-2 bg-surface-base rounded border border-surface-border px-3 py-2.5">
           <code className="text-sm font-mono text-text-primary flex-1">
-            skillpm install {skill.name}
+            skillpm install {skill.qualified_name}
           </code>
-          <CopyButton text={`skillpm install ${skill.name}`} />
+          <CopyButton text={`skillpm install ${skill.qualified_name}`} />
         </div>
       </div>
 

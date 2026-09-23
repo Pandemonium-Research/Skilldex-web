@@ -70,12 +70,12 @@ export function SkillCard({
         <span className="text-xs font-mono text-text-secondary flex-none">{skill.score}</span>
       )}
 
-      {/* Install command. Bare name deliberately — see the note on the detail page. */}
+      {/* Install command, by qualified name — see the note on the detail page. */}
       <div className="hidden lg:flex items-center gap-2 bg-surface-overlay border border-surface-border rounded px-3 py-1.5 flex-none">
         <code className="text-xs font-mono text-text-primary whitespace-nowrap">
-          skillpm install {skill.name}
+          skillpm install {skill.qualified_name}
         </code>
-        <CopyButton text={`skillpm install ${skill.name}`} />
+        <CopyButton text={`skillpm install ${skill.qualified_name}`} />
       </div>
     </div>
   )
