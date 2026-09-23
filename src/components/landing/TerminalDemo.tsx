@@ -1,15 +1,19 @@
+// Mirrors what skillpm prints (install-action.ts, list-action.ts). anthropics/pdf is a real
+// registry row: score 100, verified. The empty global and shared scope headers of `list` are
+// left out for length.
 const lines = [
-  { type: 'prompt',  text: '$ skillpm install forensics-agent' },
-  { type: 'dim',     text: '  Resolving forensics-agent@latest...' },
-  { type: 'dim',     text: '  Fetching from registry (412ms)' },
-  { type: 'success', text: '  ✓ forensics-agent@1.2.0 · score 94 · verified' },
-  { type: 'success', text: '  ✓ Done · 1 skill · 3 resources' },
+  { type: 'prompt',  text: '$ skillpm install anthropics/pdf' },
+  { type: 'success', text: '  ✔ Installed "pdf" at project scope' },
+  { type: 'success', text: '  ✓ Score: 100/100 · Trust: verified' },
+  { type: 'dim',     text: '  Linked into ~/projects/incident-bot/.agents/skills/pdf' },
+  { type: 'dim',     text: '  Linked into ~/projects/incident-bot/.claude/skills/pdf' },
   { type: 'blank',   text: '' },
   { type: 'prompt',  text: '$ skillpm list' },
-  { type: 'out',     text: '  global (1)' },
-  { type: 'out',     text: '    forensics-agent  1.2.0' },
+  { type: 'out',     text: '  project scope' },
+  { type: 'out',     text: '    pdf                            score: 100/100  source: community' },
+  { type: 'dim',     text: '  1 skill(s) installed across 3 scope(s)' },
   { type: 'blank',   text: '' },
-  { type: 'comment', text: '# Your agent now has /forensics-analyze' },
+  { type: 'comment', text: '# Claude Code, Codex, Cursor and other agents now see it' },
 ]
 
 function TerminalLine({ type, text }: { type: string; text: string }) {
@@ -45,8 +49,8 @@ export function TerminalDemo() {
           Terminal
         </p>
         <h2 className="text-3xl sm:text-[44px] font-semibold leading-[1.05] mb-10">
-          Three commands.{' '}
-          <span className="text-text-secondary">Empty to shipping.</span>
+          One install.{' '}
+          <span className="text-text-secondary">Every agent.</span>
         </h2>
 
         <div className="rounded-[14px] overflow-hidden border border-surface-border bg-surface-raised shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_32px_80px_-20px_rgba(0,0,0,0.6),0_0_60px_-20px_rgba(255,138,31,0.15)]">
