@@ -49,6 +49,16 @@ The registry prints the skill's score and any diagnostics.
 skillpm install you/log-triage
 ```
 
+## Updating a skill
+
+Installs always clone the skill from GitHub, so they get your latest push. The registry's listing — description and score — is what it read when you published. To refresh it after pushing changes, run this from the skill's folder:
+
+```bash
+skillpm publish --update
+```
+
+This needs skilldex-cli 1.5.5 or later.
+
 ## Skillsets
 
 Skillsets publish the same way, from the skillset's folder:
