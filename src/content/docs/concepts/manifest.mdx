@@ -1,55 +1,51 @@
 ---
 title: "The manifest (skilldex.json)"
-description: "How skilldex.json tracks project-scoped skills."
+description: "How skilldex.json records what is installed in a scope."
 section: "Concepts"
-order: 21
+order: 31
 ---
 
 # The manifest (skilldex.json)
 
-`skilldex.json` is the project-level manifest file for Skilldex. It lives at the root of your project and records which skills are installed at project scope.
+Every scope has a `skilldex.json` recording what is installed in it: `<project>/.skilldex/skilldex.json` for a project, and `~/.skilldex/shared/skilldex.json` and `~/.skilldex/global/skilldex.json` for the others. `skillpm` writes it on every install, update, and uninstall. You do not edit it by hand.
 
 ## Structure
 
 ```json
 {
-  "version": "1",
+  "skilldexVersion": "1",
+  "scope": "project",
   "skills": {
-    "forensics-agent": "1.2.0",
-    "test-generator": "^2.0.0"
-  }
+    "pdf": {
+      "name": "pdf",
+      "version": "1.0.0",
+      "source": "community",
+      "sourceUrl": "https://github.com/anthropics/skills/tree/main/skills/pdf",
+      "installedAt": "2026-09-23T10:00:00.000Z",
+      "specVersion": "1.0",
+      "score": 100,
+      "path": "skills/pdf"
+    }
+  },
+  "skillsets": {},
+  "updatedAt": "2026-09-23T10:00:00.000Z"
 }
 ```
 
+## Skill entries
+
 | Field | Description |
 |---|---|
-| `version` | Manifest format version (currently `"1"`) |
-| `skills` | Map of skill name to version range |
+| `name` | The installed name, as used by `uninstall` and `update` |
+| `source` | `community` for registry and GitHub installs, `local` for a folder |
+| `sourceUrl` | Where the skill came from. `skillpm update` re-fetches from here; local installs have none |
+| `installedAt` | When it was installed |
+| `specVersion` | The spec version it was validated against |
+| `score` | Its format conformance score at install time |
+| `path` | Where it lives, relative to the scope's directory |
 
-## Version ranges
+Skillsets are recorded under `skillsets`, with the skills each one brought in.
 
-Version ranges follow semver conventions:
+## Skills are not pinned
 
-| Range | Meaning |
-|---|---|
-| `"1.2.0"` | Exact version |
-| `"^1.2.0"` | Compatible with 1.2.0 (same major) |
-| `"~1.2.0"` | Approximately 1.2.0 (same minor) |
-| `"latest"` | Latest published version |
-
-## Installing from the manifest
-
-Running `skillpm install` in a directory with a `skilldex.json` installs all listed skills:
-
-```bash
-skillpm install
-```
-
-This is useful in CI pipelines and when onboarding new team members — one command restores the full skill set for the project.
-
-## Committing to version control
-
-Commit `skilldex.json` to your repo. Whether to commit the installed skill files in `.skilldex/skills/` depends on your workflow:
-
-- **Commit the files** — no install step needed, works offline
-- **Gitignore the files** — run `skillpm install` to restore (like `npm install`)
+Registry skills have no published versions: installing or updating fetches the skill as it currently is at its source. `skillpm list --json` reads this file, and the scores it shows are the ones taken at install time.

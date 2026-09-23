@@ -1,75 +1,46 @@
 ---
 title: "Scopes"
-description: "How global, shared, and project scopes work in Skilldex."
+description: "How project, shared, and global scopes work in Skilldex."
 section: "Concepts"
-order: 20
+order: 30
 ---
 
 # Scopes
 
-Skills in Skilldex can be installed in three scopes: **global**, **shared**, and **project**. The scope controls where the skill files live and who can use them.
+Every skill is installed into one of three scopes. The scope decides where the files live and which agents see them.
 
-## Global scope
-
-Global skills are installed on your machine and available in all Claude Code sessions.
-
-```bash
-skillpm install forensics-agent --scope global
-# or just:
-skillpm install forensics-agent
-```
-
-**When to use:** Personal productivity skills you want everywhere — debugging helpers, code review, test generation.
-
-**Where files live:** `~/.skilldex/skills/`
-
-## Shared scope
-
-Shared skills are installed in a shared directory accessible to multiple users or processes on the same machine.
+| Scope | Stored in | Linked into | Use it for |
+|---|---|---|---|
+| `project` (default) | `<project>/.skilldex/skills/` | `<project>/.agents/skills/`, `<project>/.claude/skills/` | Skills one project needs |
+| `shared` | `~/.skilldex/shared/skills/` | `~/.agents/skills/`, `~/.claude/skills/` | Skills you share across a set of projects |
+| `global` | `~/.skilldex/global/skills/` | `~/.agents/skills/`, `~/.claude/skills/` | Skills you want everywhere |
 
 ```bash
-skillpm install forensics-agent --scope shared
+skillpm install anthropics/pdf                   # project
+skillpm install anthropics/pdf --scope shared
+skillpm install anthropics/pdf --scope global
 ```
 
-**When to use:** Team machines, CI environments, shared development containers.
+Change the default with `skillpm config set defaultScope <scope>`.
 
-**Where files live:** A system-level directory configured by the administrator (e.g. `/usr/local/skilldex/skills/`).
+## Linking into agents
 
-## Project scope
+Agents read skills from their own directories, not from `.skilldex/`. After installing, `skillpm` links the skill into:
 
-Project skills are checked into your repo and available to anyone who clones the project.
+- `.agents/skills/` — read by Codex, Gemini CLI, Cursor, Copilot, OpenCode, and others
+- `.claude/skills/` — read by Claude Code, and also by Cursor, Copilot, Cline, and others
+- Qwen Code's, Cline's, and Antigravity's own directories, when those agents are installed
 
-```bash
-skillpm install forensics-agent --scope project
-```
+Agents read at two levels, the project and your home directory, so `shared` and `global` both link into your home directory. Links are symlinks where the system allows them and copies otherwise. Pass `--no-bridge` to skip linking.
 
-**When to use:** Skills that are essential to a specific project's workflow. Everyone who clones the repo gets the skill automatically when they run `skillpm install`.
+## Where the project is
 
-**Where files live:** `.skilldex/skills/` in the project root.
+For `project` scope, `skillpm` walks up from the current directory to the nearest folder containing `.git/` or `package.json`, and puts `.skilldex/` there — next to `.git/`. With neither, it uses the current directory.
 
-**How it is tracked:** The skill is recorded in `skilldex.json` at the project root. Commit both `skilldex.json` and `.skilldex/skills/` to your repo.
+## Same name, several scopes
 
-## Scope resolution order
+Each scope is independent: the same skill can be installed in more than one. Installing a skill that is already in the same scope fails unless you pass `--force`.
 
-When Claude Code looks up a skill, it checks scopes in this order:
+## Committing project skills
 
-1. Project
-2. Shared
-3. Global
-
-Project skills take precedence, which means a project can pin a specific version of a skill even if a different version is installed globally.
-
-## skilldex.json
-
-When a skill is installed in project scope, `skilldex.json` is created or updated:
-
-```json
-{
-  "skills": {
-    "forensics-agent": "1.2.0",
-    "test-generator": "2.0.0"
-  }
-}
-```
-
-Running `skillpm install` in a project directory with a `skilldex.json` installs all listed skills automatically — similar to `npm install`.
+Each scope keeps a manifest, `skilldex.json` — see [The manifest](/docs/concepts/manifest). For a project, you can commit `.skilldex/` so everyone who clones the repository has the skills, or ignore it and have each person install what they need.

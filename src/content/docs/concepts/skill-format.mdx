@@ -1,79 +1,64 @@
 ---
 title: "Skill format"
-description: "The structure of a valid Skilldex skill package."
+description: "The structure of a valid skill."
 section: "Concepts"
-order: 22
+order: 32
 ---
 
 # Skill format
 
-A Skilldex skill is a directory with a `SKILL.md` file at the root, plus optional resource files.
+Skilldex does not define its own format. It validates skills against the skill format specification that agents such as Claude Code already read: a directory with a `SKILL.md` at its root, plus optional resource folders.
 
 ## Directory structure
 
-```
+```text
 my-skill/
-├── SKILL.md          ← required: the skill definition
-└── resources/        ← optional: scripts, data files, references
-    ├── helper.sh
-    └── reference.md
+├── SKILL.md          ← required: frontmatter + instructions
+├── scripts/          ← optional: code the skill runs
+├── references/       ← optional: documents loaded into context when needed
+└── assets/           ← optional: templates, images, fonts
 ```
+
+Only `scripts/`, `references/`, and `assets/` are recognised; any other folder is a warning. Keep executable files (`.sh`, `.py`, `.js`, `.ts`, `.rb`) in `scripts/` and documents in `references/`. Put documentation in `SKILL.md` or `references/`, not a `README.md` inside the skill.
 
 ## SKILL.md
 
-`SKILL.md` is a markdown file with YAML frontmatter.
+`SKILL.md` starts with YAML frontmatter between `---` lines, followed by the instructions in markdown.
+
+```markdown
+---
+name: log-triage
+description: "Triage application logs and stack traces to find the root cause of a failure. Use this skill when investigating a bug, a production incident, or a crash, and when the user shares logs, traces, or error output and asks what went wrong."
+tags: [debugging, logs]
+---
+
+# Log triage
+
+Instructions the agent follows...
+```
 
 ### Frontmatter
 
-```yaml
----
-title: "My Skill"
-description: "A brief description of what this skill does."
-version: "1.0.0"
-specVersion: "1.0"
-author: "your-github-username"
-license: "MIT"
-tags:
-  - debugging
-  - typescript
-resources:
-  - path: resources/helper.sh
-    type: script
-  - path: resources/reference.md
-    type: reference
----
-```
+| Field | Required | Rules |
+|---|---|---|
+| `name` | Yes | Kebab-case. Cannot contain `claude` or `anthropic` |
+| `description` | Yes | What the skill does and when to use it. At least 30 words, at most 1,024 characters, no XML tags |
+| `version`, `tags`, `author` | No | Metadata; not scored |
 
-### Required fields
+The description is what an agent reads to decide whether to use the skill, so a vague one means the skill rarely gets used. Quote it: an unquoted description containing a colon breaks the YAML, and a skill with unreadable frontmatter scores 0.
 
-| Field | Description |
-|---|---|
-| `title` | Human-readable skill name |
-| `description` | One-sentence description shown in the registry |
-| `version` | Semantic version of this skill release |
-| `specVersion` | The Skilldex spec version this skill targets |
+### Length
 
-### Optional fields
+Keep `SKILL.md` under 500 lines. Over 400 is a warning; over 500 earns no points for the check. Move long material into `references/`.
 
-| Field | Description |
-|---|---|
-| `author` | GitHub username or display name |
-| `license` | SPDX license identifier |
-| `tags` | Array of searchable tags |
-| `resources` | Array of resource file references |
+### Referenced files
 
-## The skill body
+Paths in `SKILL.md` that point into the skill — a markdown link to `assets/template.docx`, or a mention of `scripts/setup.sh` — must exist. Each missing one is an error on the line that references it. External URLs are not checked.
 
-After the frontmatter, the rest of `SKILL.md` is the skill's instruction content — what Claude Code reads and uses. Write it as you would a detailed prompt or instruction set.
-
-## Packaging
-
-Skills are distributed as `.skill` archives (gzip-compressed tar). The `skillpm publish` command creates this archive automatically.
-
-## Validation
-
-Run `skillpm validate` to check your skill against the spec before publishing:
+## Validate
 
 ```bash
 skillpm validate ./my-skill
 ```
+
+`skillpm init` scaffolds a `SKILL.md` that already passes. See [Quality scoring](/docs/concepts/quality-scoring) for how the score is calculated.
