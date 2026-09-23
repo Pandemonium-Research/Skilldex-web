@@ -1,54 +1,54 @@
 ---
 title: "What is Skilldex"
-description: "An introduction to Skilldex — the package manager for Claude Code skills."
+description: "An introduction to Skilldex — the package manager for agent skills."
 section: "Getting Started"
 order: 1
 ---
 
 # What is Skilldex
 
-Skilldex is a package manager for Claude Code skills. It lets you install, share, and discover skills — reusable instruction sets that extend what Claude Code can do in your projects.
+Skilldex is a package manager for agent skills. It lets you search, install, validate, and publish skills — folders of instructions and resources, built around a `SKILL.md` file, that teach a coding agent how to do something specific.
 
-Think of it like npm, but for AI agent capabilities instead of JavaScript libraries.
+Think of it like npm, but for agent capabilities instead of JavaScript libraries.
 
 ## The problem it solves
 
-Claude Code skills are powerful, but today they live scattered across individual projects with no standard way to share them. If you write a great debugging skill for one repo, there is no easy way to use it in another — let alone share it with the community.
+Skills are powerful, but they live scattered across individual repositories with no standard way to find or reuse them. A good skill written for one project is hard to use in another, and a skill found on GitHub says nothing about whether it follows the format agents expect.
 
 Skilldex fixes this with three things:
 
-1. **A CLI** (`skillpm`) for installing and managing skills
-2. **A registry** for discovering and publishing skills
-3. **A spec** that defines what a valid skill looks like
+1. **A CLI** (`skillpm`, or `spm` for short) for installing and managing skills
+2. **A registry** of skills you can search from the terminal or [the web](/registry)
+3. **A validator** that scores every skill against the skill format specification
 
 ## Key concepts
 
 ### Skills
 
-A skill is a markdown file (or a package containing one) that teaches Claude Code how to do something specific. Examples: `forensics-agent`, `pr-reviewer`, `test-generator`.
+A skill is a directory with a `SKILL.md` at its root: YAML frontmatter with a `name` and a `description`, followed by the instructions the agent follows. It can also carry `scripts/`, `references/`, and `assets/`. See [Skill format](/docs/concepts/skill-format).
 
-Skills are installed into one of three scopes:
-
-- **Global** — available in all your Claude Code sessions
-- **Shared** — available to everyone in a shared environment
-- **Project** — checked into your repo, available to anyone who clones it
+Skills are installed into one of three scopes — **project** (the default), **shared**, or **global** — and linked into the directories your agents read, so Claude Code, Codex, Cursor, and other agents pick them up. See [Scopes](/docs/concepts/scopes).
 
 ### The registry
 
-The Skilldex registry stores metadata about published skills. When you run `skillpm install forensics-agent`, the CLI looks up the skill in the registry, downloads it, and installs it to the right scope.
+The registry indexes skills published on GitHub. Names are only unique within an owner, so the registry addresses a skill as `owner/name`:
+
+```bash
+skillpm install anthropics/pdf
+```
+
+The CLI looks the skill up, clones it from its source repository, validates it, and installs it.
 
 ### Quality scores
 
-Every skill in the registry has a format conformance score (0–100) that measures how well it follows the Skilldex spec. A higher score means the skill is more likely to work correctly across Claude Code versions.
+Every skill has a **format conformance score** (0–100): how closely it follows the skill format specification. It measures format, not usefulness. See [Quality scoring](/docs/concepts/quality-scoring).
 
-## What Skilldex is not
+### Skillsets
 
-- Not a plugin system — skills are instruction sets, not code that runs in Claude
-- Not a model fine-tuning tool — skills work with any Claude version
-- Not a replacement for CLAUDE.md — skills complement project-level instructions
+A skillset is a named bundle of skills installed together, with shared conventions its members are checked against. See [`skillpm skillset`](/docs/cli/skillset).
 
 ## Next steps
 
-- [Install the CLI](/install) — get `skillpm` running in under 60 seconds
-- [Your first skill](/docs/getting-started/first-skill) — install and use a skill from the registry
-- [CLI reference](/docs/cli/install) — full documentation of every command
+- [Install the CLI](/docs/getting-started/installation) — get `skillpm` running in under a minute
+- [Your first skill](/docs/getting-started/first-skill) — find, install, and use a skill from the registry
+- [CLI reference](/docs/cli/install) — every command and flag

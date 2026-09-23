@@ -1,80 +1,89 @@
 ---
 title: "Your first skill"
-description: "Install and use your first skill from the Skilldex registry in under two minutes."
+description: "Find, install, and use your first skill from the Skilldex registry in under two minutes."
 section: "Getting Started"
 order: 3
 ---
 
 # Your first skill
 
-This guide walks you through installing a skill from the registry and using it in Claude Code.
+This guide finds a skill in the registry, installs it into a project, and checks that your agent can see it.
 
 ## 1. Search for a skill
 
 ```bash
-skillpm search forensics
+skillpm search pdf
 ```
 
-Output:
+Each result shows the skill as `owner/name` with its trust tier, then its description, score, install count and spec version, and the command to install it — for example:
 
 ```text
-forensics-agent  1.2.0  Verified  score: 94  Deep code analysis and debugging
+anthropics/pdf [verified]
+  ...
+  skillpm install anthropics/pdf
 ```
 
-## 2. Install the skill
+Many skills share a name, so the registry addresses each one as `owner/name`. Narrow a search with `--tier verified`, or change the order with `--sort score`. See [`skillpm search`](/docs/cli/search).
+
+## 2. Install it
+
+Run this from inside your project:
 
 ```bash
-skillpm install forensics-agent
+skillpm install anthropics/pdf
 ```
-
-By default, skills are installed to global scope so they are available in all Claude Code sessions.
 
 ```text
-✓ forensics-agent@1.2.0 (score: 94/100, Verified)
-✓ Installed 1 skill, 3 resources
+✔ Installed "pdf" at project scope
+✓ Score: 100/100 · Trust: verified
+Linked into /path/to/project/.agents/skills/pdf
+Linked into /path/to/project/.claude/skills/pdf
 ```
 
-## 3. Verify the install
+Skills install at **project** scope by default. The skill is stored under `.skilldex/` in your project and linked into `.agents/skills/` and `.claude/skills/`, the directories Claude Code, Codex, Cursor, and other agents read.
+
+If you install by a bare name that several owners have published, `skillpm` asks which one you meant.
+
+## 3. Check the install
 
 ```bash
 skillpm list
 ```
 
 ```text
-Global skills (1):
-  forensics-agent  1.2.0  Verified  score: 94
+global scope
+  (no skills installed)
+
+shared scope
+  (no skills installed)
+
+project scope
+  pdf                            score: 100/100  source: community
+
+1 skill(s) installed across 3 scope(s)
 ```
 
-## 4. Use it in Claude Code
+## 4. Use it
 
-Open Claude Code in any project. The `forensics-agent` skill is now available as a slash command:
+Start your agent in the project. It finds the skill in its skills directory and uses it when a task matches the skill's description — here, whenever you ask it to work with a PDF.
 
-```
-/forensics-analyze
-```
-
-Claude Code will use the skill's instructions to guide its analysis.
-
-## Install to a specific scope
-
-Use the `--scope` flag to control where the skill is installed:
+## Install to another scope
 
 ```bash
-# Install globally (default)
-skillpm install forensics-agent --scope global
-
-# Install into the current project (saved to skilldex.json)
-skillpm install forensics-agent --scope project
+# Available in every project on this machine
+skillpm install anthropics/pdf --scope global
 ```
 
-## Uninstall a skill
+See [Scopes](/docs/concepts/scopes) for how project, shared, and global differ.
+
+## Uninstall
 
 ```bash
-skillpm uninstall forensics-agent
+skillpm uninstall pdf
 ```
 
 ## Next steps
 
-- [CLI reference](/docs/cli/install) — all commands and flags
-- [Scopes explained](/docs/concepts/scopes) — when to use global vs project scope
+- [CLI reference](/docs/cli/install) — every command and flag
+- [Scopes](/docs/concepts/scopes) — when to use project, shared, or global
 - [Browse the registry](/registry) — discover more skills

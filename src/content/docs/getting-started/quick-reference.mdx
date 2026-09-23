@@ -7,61 +7,62 @@ order: 4
 
 # Quick reference
 
-The most common `skillpm` commands at a glance.
+The most common `skillpm` commands at a glance. `spm` works anywhere `skillpm` does.
 
-## Install a skill
+## Find and install
 
 ```bash
-skillpm install <skill-name>
-skillpm install <skill-name> --scope project
-skillpm install <skill-name>@1.0.0
+skillpm search <query>                     # search the registry
+skillpm install <owner>/<name>             # install from the registry
+skillpm install ./path/to/skill            # install from a local folder
+skillpm install git+https://github.com/<user>/<repo>   # install from GitHub
+skillpm install <owner>/<name> --scope global
 ```
 
-## Search the registry
+## Manage installed skills
 
 ```bash
-skillpm search <query>
-```
-
-## List installed skills
-
-```bash
-skillpm list
+skillpm list                               # all scopes
 skillpm list --scope project
-skillpm list --scope global
+skillpm update <name>                      # re-fetch from its source
+skillpm update --all
+skillpm uninstall <name>
 ```
 
-## Uninstall a skill
+## Write and publish
 
 ```bash
-skillpm uninstall <skill-name>
+skillpm init my-skill                      # scaffold a SKILL.md
+skillpm validate ./my-skill                # score it against the spec
+skillpm publish                            # from the skill's folder
 ```
 
-## Validate a skill
+## Skillsets
 
 ```bash
-skillpm validate ./path/to/skill
+skillpm skillset search <query>
+skillpm skillset install <name>
+skillpm skillset list
 ```
 
-## Publish a skill
+## Suggestions and configuration
 
 ```bash
-skillpm publish
+skillpm suggest                            # skills for the current project
+skillpm config list                        # valid config keys
+skillpm config set defaultScope global
 ```
 
-## Get help
+## Help and version
 
 ```bash
 skillpm --help
 skillpm <command> --help
-```
-
-## Check version
-
-```bash
 skillpm --version
 ```
 
+Every command that reports something also takes `--json` for scripting.
+
 ---
 
-For full documentation of each command, see the [CLI Reference](/docs/cli/install).
+For full documentation of each command, see the [CLI reference](/docs/cli/install).
