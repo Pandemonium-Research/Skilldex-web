@@ -1,0 +1,36 @@
+---
+title: "skillpm config"
+description: "View and set Skilldex configuration."
+section: "CLI Reference"
+order: 20
+---
+
+# skillpm config
+
+Read and write `~/.skilldex/config.json`. An environment variable always overrides the file.
+
+## Usage
+
+```bash
+skillpm config get [key] [--json]   # one value, or all of them
+skillpm config set <key> <value>
+skillpm config unset <key>
+skillpm config list                 # valid keys and what they do
+```
+
+## Keys
+
+| Key | Environment variable | Description |
+|---|---|---|
+| `registryUrl` | `SKILLDEX_REGISTRY_URL` | Registry API base URL |
+| `token` | `SKILLDEX_TOKEN` | Publisher token for `publish` |
+| `anthropicApiKey` | `ANTHROPIC_API_KEY` | API key for `suggest` |
+| `defaultScope` | `SKILLDEX_DEFAULT_SCOPE` | Default install scope: `global`, `shared`, or `project` |
+
+## Examples
+
+```bash
+skillpm config set defaultScope global
+skillpm config get defaultScope
+skillpm config unset token
+```

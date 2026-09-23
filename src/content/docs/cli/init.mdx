@@ -1,0 +1,34 @@
+---
+title: "skillpm init"
+description: "Scaffold a new skill."
+section: "CLI Reference"
+order: 16
+---
+
+# skillpm init
+
+Create a skill directory with a `SKILL.md` template that passes validation as written.
+
+## Usage
+
+```bash
+skillpm init [name]
+```
+
+With a name, `init` creates `./<name>/SKILL.md`. Without one, it writes `SKILL.md` into the current directory and uses the directory's name. The name must be kebab-case; `init` refuses a name the validator would reject.
+
+## Example
+
+```bash
+skillpm init log-triage
+```
+
+```text
+✓ Skill "log-triage" initialized
+  log-triage/SKILL.md
+  Replace the description and body, then: skillpm validate
+```
+
+The template's description is quoted on purpose: an unquoted description containing a colon breaks the YAML frontmatter, and a skill with unreadable frontmatter scores 0.
+
+See [Creating a skill](/docs/publishing/creating-a-skill) for what to write next.

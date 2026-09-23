@@ -1,49 +1,54 @@
 ---
 title: "skillpm suggest"
-description: "Get skill recommendations based on your project."
+description: "Get registry skills suggested for your project."
 section: "CLI Reference"
-order: 14
+order: 18
 ---
 
 # skillpm suggest
 
-Analyse the current project and suggest relevant skills from the registry.
+Read the current project, search the registry for skills that fit it, and let you approve each suggestion before anything is installed.
 
 ## Usage
 
 ```bash
-skillpm suggest
+skillpm suggest [--project-path <path>] [--yes] [--json]
 ```
 
 ## Flags
 
-| Flag | Description |
-|---|---|
-| `--limit <n>` | Maximum number of suggestions (default: 5) |
-| `--json` | Output as JSON |
+| Flag | Default | Description |
+|---|---|---|
+| `-p, --project-path <path>` | current directory | Project to analyse |
+| `-y, --yes` | `false` | Approve every suggestion without prompting |
+| `--json` | — | Print the proposals as JSON without prompting or installing |
+
+## How it works
+
+1. **Read the project.** `suggest` builds a profile from files such as the README and `package.json`. If there is nothing to go on, it says so and stops instead of guessing.
+2. **Search the registry.** Search terms from the profile are run against the registry.
+3. **Choose.** A model picks the best fits from the skills the search returned. It can only choose from those results, so every suggestion is a real, installable skill.
+4. **Approve.** Each suggestion is shown with its qualified name, a reason, and a suggested scope. You install it at that scope, pick another, or skip it.
+5. **Install.** Approved skills are installed exactly as `skillpm install <owner>/<name>` would.
+
+When the project needs something the registry does not have, `suggest` lists it separately as a gap and offers to draft it as a new skill in your project.
+
+## Requirements
+
+Step 3 calls the Anthropic API, so `suggest` is the one command that needs a key:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+# or
+skillpm config set anthropicApiKey sk-ant-...
+```
+
+To use another endpoint that speaks the Anthropic Messages API, such as a LiteLLM proxy, set `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`. `SKILLPM_SUGGEST_MODEL` picks the model (default `claude-sonnet-4-6`).
 
 ## Examples
 
 ```bash
-# Get suggestions for the current project
 skillpm suggest
-
-# Get up to 10 suggestions
-skillpm suggest --limit 10
+skillpm suggest --project-path ../other-project
+skillpm suggest --json
 ```
-
-## Example output
-
-```text
-Analysing project...
-Detected: TypeScript, React, Vitest, GitHub Actions
-
-Suggested skills:
-  1. test-generator     score: 87  Generates Vitest/Jest tests from source files
-  2. pr-reviewer        score: 91  Automated PR review with inline comments
-  3. ci-debugger        score: 78  Diagnoses failing GitHub Actions workflows
-
-Install with: skillpm install <skill-name>
-```
-
-`suggest` looks at your `package.json`, file structure, and config files to produce relevant recommendations.

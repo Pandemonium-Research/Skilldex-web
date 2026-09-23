@@ -1,47 +1,53 @@
 ---
 title: "skillpm list"
-description: "List all installed skills."
+description: "List installed skills."
 section: "CLI Reference"
 order: 12
 ---
 
 # skillpm list
 
-List all skills installed in the current environment.
+List the skills installed in each scope.
 
 ## Usage
 
 ```bash
-skillpm list
+skillpm list [--scope <scope>] [--json]
 ```
 
 ## Flags
 
 | Flag | Default | Description |
 |---|---|---|
-| `--scope` | all | Filter by scope: `global`, `shared`, or `project` |
+| `-s, --scope <scope>` | all | Show one scope: `global`, `shared`, or `project` |
 | `--json` | — | Output as JSON |
 
 ## Examples
 
 ```bash
-# List all installed skills
+# All scopes
 skillpm list
 
-# List only project skills
+# Only this project
 skillpm list --scope project
 
-# Machine-readable output
+# Machine-readable
 skillpm list --json
 ```
 
 ## Example output
 
 ```text
-Global skills (2):
-  forensics-agent  1.2.0  Verified  score: 94
-  pr-reviewer      0.9.1  Community score: 81
+global scope
+  (no skills installed)
 
-Project skills (1):
-  test-generator   2.0.0  Community score: 87
+shared scope
+  (no skills installed)
+
+project scope
+  pdf                            score: 100/100  source: community
+
+1 skill(s) installed across 3 scope(s)
 ```
+
+`source` is `community` for skills installed from the registry or GitHub and `local` for skills installed from a folder. A skill written against an older spec version is flagged with the `skillpm update` command that refreshes it.

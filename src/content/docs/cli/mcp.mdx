@@ -1,0 +1,50 @@
+---
+title: "skillpm mcp"
+description: "Run Skilldex as an MCP server for your coding agent."
+section: "CLI Reference"
+order: 21
+---
+
+# skillpm mcp
+
+`skillpm mcp` starts a Model Context Protocol server over stdio, so a coding agent can search, install, and validate skills itself mid-session. It works with any MCP client — Claude Code, Codex, Cursor, and others. You do not run it by hand; you point your agent's MCP configuration at it.
+
+## Setup
+
+**Claude Code** — `.mcp.json` in the project root:
+
+```json
+{
+  "mcpServers": {
+    "skilldex": {
+      "command": "skillpm",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+**Codex** — `~/.codex/config.toml`:
+
+```text
+[mcp_servers.skilldex]
+command = "skillpm"
+args = ["mcp"]
+```
+
+## Tools
+
+| Tool | Does |
+|---|---|
+| `skilldex_search` | Search the registry |
+| `skilldex_install` | Install a skill |
+| `skilldex_uninstall` | Remove a skill |
+| `skilldex_list` | List installed skills |
+| `skilldex_validate` | Validate and score a skill folder |
+| `skilldex_suggest` | Suggest registry skills for a project |
+| `skilldex_skillset_install` | Install a skillset |
+| `skilldex_skillset_uninstall` | Remove a skillset |
+| `skilldex_skillset_list` | List installed skillsets |
+| `skilldex_skillset_validate` | Validate a skillset |
+
+Only `skilldex_suggest` calls a model, so it is the only tool that needs `ANTHROPIC_API_KEY`. Pass it through the server's `env` block if you use it.

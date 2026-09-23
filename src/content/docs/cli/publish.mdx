@@ -2,56 +2,51 @@
 title: "skillpm publish"
 description: "Publish a skill to the Skilldex registry."
 section: "CLI Reference"
-order: 15
+order: 17
 ---
 
 # skillpm publish
 
-Package and publish a skill to the Skilldex registry.
+Register a skill with the Skilldex registry. The registry does not store an upload: it records the skill's GitHub location, fetches `SKILL.md` from there, and scores it.
 
 ## Usage
 
 ```bash
-skillpm publish
+skillpm publish [--source-url <url>] [--tags <tags>] [--update] [--json]
 ```
 
-Run from the skill's root directory. The directory must contain a valid `SKILL.md` and pass `skillpm validate`.
+Run it from the skill's folder. The skill's name comes from the `name` field in its `SKILL.md`.
 
 ## Flags
 
 | Flag | Description |
 |---|---|
-| `--dry-run` | Package the skill and validate without publishing |
-| `--tag <tag>` | Publish with a dist-tag (default: `latest`) |
+| `--source-url <url>` | GitHub URL of the skill. Detected from the folder's git remote if omitted |
+| `--tags <tags>` | Comma-separated tags, e.g. `pdf,documents` |
+| `--update` | Re-fetch and re-score a skill you have already published |
+| `--json` | Output the result as JSON |
+
+## Authentication
+
+Publishing needs a token. Sign in with GitHub at the registry's `/auth/github` page — `skillpm publish` prints the exact URL when no token is set — then store it:
+
+```bash
+skillpm config set token <token>
+```
+
+The `SKILLDEX_TOKEN` environment variable works too.
 
 ## Examples
 
 ```bash
-# Publish the skill in the current directory
-skillpm publish
+# Publish the skill in the current folder
+skillpm publish --tags pdf,documents
 
-# Preview what would be published
-skillpm publish --dry-run
+# The git remote is not the skill's home
+skillpm publish --source-url https://github.com/you/skills/tree/main/my-skill
 
-# Publish as a beta release
-skillpm publish --tag beta
+# Pick up changes you have pushed
+skillpm publish --update
 ```
 
-## Pre-publish checklist
-
-Before publishing, make sure:
-
-1. `skillpm validate` passes with no errors
-2. Version in `SKILL.md` frontmatter is bumped
-3. `SKILL.md` has a meaningful description
-4. Any referenced resources are included
-
-## What happens on publish
-
-1. The skill directory is validated
-2. The format conformance score is calculated
-3. The skill is packaged into a `.skill` archive
-4. The archive is uploaded to the registry
-5. The registry metadata is updated
-
-See [Publishing to the registry](/docs/publishing/publishing-to-registry) for a full walkthrough.
+The skill must be pushed to GitHub first: the registry reads it from there, not from your disk. See [Publishing to the registry](/docs/publishing/publishing-to-registry).

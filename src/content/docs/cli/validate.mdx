@@ -1,18 +1,18 @@
 ---
 title: "skillpm validate"
-description: "Validate a skill against the Skilldex spec before publishing."
+description: "Score a skill against the skill format specification."
 section: "CLI Reference"
-order: 13
+order: 15
 ---
 
 # skillpm validate
 
-Check that a skill directory conforms to the Skilldex spec. Run this before publishing.
+Check a skill folder against the skill format specification and print a compiler-style report with its format conformance score.
 
 ## Usage
 
 ```bash
-skillpm validate [path]
+skillpm validate [path] [--json]
 ```
 
 `path` defaults to the current directory.
@@ -21,44 +21,54 @@ skillpm validate [path]
 
 | Flag | Description |
 |---|---|
-| `--strict` | Fail on warnings as well as errors |
-| `--json` | Output results as JSON |
+| `--json` | Output the full result as JSON |
 
 ## Examples
 
 ```bash
-# Validate the current directory
 skillpm validate
-
-# Validate a specific path
 skillpm validate ./my-skill
-
-# Fail on warnings too
-skillpm validate --strict
+skillpm validate ./my-skill --json
 ```
 
 ## Example output
 
 ```text
-Validating ./my-skill against spec v1.0...
+  pass    YAML frontmatter valid
+  pass    name field present
+  pass    name is kebab-case and uses no reserved words
+  pass    description meets length requirement (41 words)
+  pass    description is within the character limit and free of XML tags
+  pass    SKILL.md line count OK (38 lines)
+  pass    Folder structure matches convention
+  warn    README.md should not be inside the skill folder — put docs in SKILL.md or references/
+  pass    All referenced resources exist
+  pass    Bundled resources in correct subdirectories
 
-✓ SKILL.md present
-✓ Required frontmatter fields present (title, description, version)
-✓ Version is valid semver
-✗ Missing: resources[] entries reference non-existent files
-  → resources/helper.sh not found
+Score breakdown:
+  yaml-frontmatter      16/16
+  name-present          16/16
+  name-format           11/11
+  description-present   16/16
+  description-length     6/6
+  description-format    11/11
+  line-count             7/7
+  allowed-subdirs        4/4
+  no-readme              0/4
+  referenced-resources   7/7
+  bundled-resources      2/2
 
-Score: 71/100
-2 errors, 1 warning
-
-Fix errors before publishing.
+Format conformance score: 96/100
+Validated against: skill-format v1.0
 ```
 
-## What is validated
+See [Quality scoring](/docs/concepts/quality-scoring) for what each check measures.
 
-- Presence of `SKILL.md`
-- Required frontmatter fields
-- Valid semver version
-- Referenced resource files exist
-- Spec version compatibility
-- No forbidden content patterns
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| `0` | No errors (warnings are allowed) |
+| `1` | At least one error |
+
+To validate a skillset, use [`skillpm skillset validate`](/docs/cli/skillset).

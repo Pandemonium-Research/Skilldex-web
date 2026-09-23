@@ -1,0 +1,59 @@
+---
+title: "skillpm skillset"
+description: "Search, install, and manage skillsets — bundles of skills."
+section: "CLI Reference"
+order: 19
+---
+
+# skillpm skillset
+
+A skillset is a named bundle of skills installed together. Its `SKILLSET.md` lists the members and can declare conventions they share; the validator checks the members against those conventions and reports a coherence score beside the format score.
+
+## Subcommands
+
+| Subcommand | Description |
+|---|---|
+| `skillset search [query]` | Search the registry for skillsets |
+| `skillset install <source>` | Install a skillset from the registry, a git URL, or a local folder |
+| `skillset list` | List installed skillsets |
+| `skillset update [name]` | Re-fetch and reinstall from source (`--all` for every skillset in a scope) |
+| `skillset uninstall <name>` | Remove a skillset and its skills |
+| `skillset init [name]` | Scaffold a skillset directory with a `SKILLSET.md` template |
+| `skillset validate [path]` | Validate the structure and score `SKILLSET.md` |
+| `skillset publish` | Publish a skillset to the registry |
+
+`install`, `list`, `update`, and `uninstall` take `-s, --scope` like their skill counterparts, defaulting to `project`. Every subcommand takes `--json`.
+
+## Search flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--tier <tier>` | all | `verified` or `community` |
+| `--sort <sort>` | `relevance` | `relevance`, `coherence`, `installs`, `score`, `recent`, or `name` |
+| `--min-coherence <pct>` | — | Only skillsets whose members agree at least this much (0–100) |
+| `--limit <n>` | `10` | Number of results, up to 50 |
+
+## Validate flags
+
+| Flag | Description |
+|---|---|
+| `--strict` | Fail when a member contradicts a declared shared convention |
+
+## Examples
+
+```bash
+# Install the official developer skillset
+skillpm skillset install developer
+
+# Find skillsets whose members agree
+skillpm skillset search testing --sort coherence
+
+# Check a skillset you are writing
+skillpm skillset init my-toolkit
+skillpm skillset validate ./my-toolkit --strict
+
+# Publish it (from its folder, with a token set)
+skillpm skillset publish --tags testing,ci
+```
+
+Skillset names are not owner-qualified: install one by its name.

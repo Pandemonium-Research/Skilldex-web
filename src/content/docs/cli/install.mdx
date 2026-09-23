@@ -1,69 +1,82 @@
 ---
 title: "skillpm install"
-description: "Install a skill from the registry or a local path."
+description: "Install a skill from the registry, a GitHub repository, or a local folder."
 section: "CLI Reference"
 order: 10
 ---
 
 # skillpm install
 
-Install a skill from the Skilldex registry or a local directory.
+Install a skill from the Skilldex registry, a GitHub repository, or a local directory.
 
 ## Usage
 
 ```bash
-skillpm install <skill-name>[@version]
-skillpm install <local-path>
+skillpm install <source> [--scope <scope>] [--force] [--no-bridge] [--json]
 ```
 
-## Arguments
+## Sources
 
-| Argument | Description |
+| Source | Example |
 |---|---|
-| `skill-name` | The name of a skill in the registry |
-| `skill-name@version` | Install a specific version |
-| `local-path` | Install from a local directory (must contain a valid `SKILL.md`) |
+| Registry, by qualified name | `anthropics/pdf` |
+| Registry, by bare name | `pdf` — if several owners publish that name, `skillpm` asks which one |
+| GitHub repository | `git+https://github.com/user/repo` |
+| GitHub subdirectory | `git+https://github.com/user/repo/tree/main/skills/my-skill` |
+| Local directory | `./my-skill` or an absolute path |
 
 ## Flags
 
 | Flag | Default | Description |
 |---|---|---|
-| `--scope` | `global` | Where to install: `global`, `shared`, or `project` |
-| `--dry-run` | — | Show what would be installed without installing |
-| `--force` | — | Overwrite an existing install of the same version |
+| `-s, --scope <scope>` | `project` | Where to install: `global`, `shared`, or `project` |
+| `-f, --force` | `false` | Overwrite the skill if it is already installed at this scope |
+| `--no-bridge` | — | Do not link the skill into agent directories (`.agents/skills`, `.claude/skills`) |
+| `--json` | — | Output the result as JSON |
+
+The default scope can be changed with `skillpm config set defaultScope <scope>`.
 
 ## Examples
 
 ```bash
-# Install the latest version globally
-skillpm install forensics-agent
+# Install from the registry into the current project
+skillpm install anthropics/pdf
 
-# Install a specific version
-skillpm install forensics-agent@1.2.0
+# Install for every project on this machine
+skillpm install anthropics/pdf --scope global
 
-# Install into the current project
-skillpm install forensics-agent --scope project
+# Install from GitHub
+skillpm install git+https://github.com/user/repo/tree/main/skills/my-skill
 
-# Install from a local path
+# Install a skill you are writing
 skillpm install ./my-skill
 
-# Preview what would happen
-skillpm install forensics-agent --dry-run
+# Reinstall over an existing copy
+skillpm install anthropics/pdf --force
 ```
+
+## Example output
+
+```text
+✔ Installed "pdf" at project scope
+✓ Score: 100/100 · Trust: verified
+Linked into /path/to/project/.agents/skills/pdf
+Linked into /path/to/project/.claude/skills/pdf
+```
+
+If the skill has warnings or errors, the full validation report is printed instead of the score line. Warnings never block an install.
 
 ## What happens on install
 
-1. The registry is queried for the skill metadata
-2. The skill archive is downloaded and verified
-3. The skill is validated against the spec
-4. The skill files are written to the target scope directory
-5. If `--scope project`, the skill is recorded in `skilldex.json`
+1. A registry name is looked up to find the skill's source repository.
+2. The repository is cloned (shallow) and the skill folder located.
+3. The skill is validated and scored.
+4. The folder is copied into the scope's `skills/` directory and recorded in that scope's `skilldex.json`.
+5. The skill is linked into the agent directories for that scope: `.agents/skills/` and `.claude/skills/`, plus Qwen Code, Cline, and Antigravity directories when those agents are installed. A directory that already holds a different skill of the same name is left alone and reported.
 
 ## Exit codes
 
 | Code | Meaning |
 |---|---|
-| `0` | Success |
-| `1` | Skill not found |
-| `2` | Validation failed |
-| `3` | Network error |
+| `0` | Installed |
+| `1` | Any error: not found, already installed without `--force`, ambiguous name in a non-interactive shell, network failure |

@@ -7,28 +7,35 @@ order: 11
 
 # skillpm uninstall
 
-Remove a skill from the specified scope.
+Remove a skill from a scope, along with the links made into agent directories.
 
 ## Usage
 
 ```bash
-skillpm uninstall <skill-name>
+skillpm uninstall <skill-name> [--scope <scope>] [--json]
 ```
+
+Use the skill's installed name — `pdf`, not `anthropics/pdf`. `skillpm list` shows installed names.
 
 ## Flags
 
 | Flag | Default | Description |
 |---|---|---|
-| `--scope` | `global` | Scope to uninstall from: `global`, `shared`, or `project` |
+| `-s, --scope <scope>` | `project` | Scope to remove from: `global`, `shared`, or `project` |
+| `--json` | — | Output the result as JSON |
 
 ## Examples
 
 ```bash
-# Uninstall from global scope
-skillpm uninstall forensics-agent
+# Remove from the current project
+skillpm uninstall pdf
 
-# Uninstall from the current project
-skillpm uninstall forensics-agent --scope project
+# Remove from global scope
+skillpm uninstall pdf --scope global
 ```
 
-If the skill is installed in project scope, it is also removed from `skilldex.json`.
+```text
+✔ Uninstalled "pdf" from project scope
+```
+
+Exits with code `1` if the skill is not installed at that scope.

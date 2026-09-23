@@ -1,0 +1,47 @@
+---
+title: "skillpm search"
+description: "Search the Skilldex registry for skills."
+section: "CLI Reference"
+order: 13
+---
+
+# skillpm search
+
+Search the registry by name, description, and tags.
+
+## Usage
+
+```bash
+skillpm search <query> [--tier <tier>] [--sort <sort>] [--limit <n>] [--json]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--tier <tier>` | all | `verified` or `community` |
+| `--sort <sort>` | `relevance` | `relevance`, `installs`, `score`, `recent`, or `name` |
+| `--limit <n>` | `10` | Number of results, up to 50 |
+| `--json` | — | Output the raw registry response |
+
+## Examples
+
+```bash
+skillpm search pdf
+skillpm search "code review" --tier verified
+skillpm search terraform --sort score --limit 20
+```
+
+## Output
+
+Each result shows the skill's qualified name and trust tier, its description, score, install count and spec version, and the command that installs it:
+
+```text
+anthropics/pdf [verified]
+  ...
+  skillpm install anthropics/pdf
+```
+
+Counts above 1,000 are reported as `1,000+`: the registry stops counting there rather than scanning every match.
+
+To search skillsets, use [`skillpm skillset search`](/docs/cli/skillset).

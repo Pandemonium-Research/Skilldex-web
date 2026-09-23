@@ -1,0 +1,39 @@
+---
+title: "skillpm update"
+description: "Re-fetch installed skills from their source."
+section: "CLI Reference"
+order: 14
+---
+
+# skillpm update
+
+Re-fetch an installed skill from the source it was installed from, re-validate it, and reinstall it.
+
+## Usage
+
+```bash
+skillpm update [skill-name] [--scope <scope>] [--all] [--json]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--scope <scope>` | `project` | Scope to update in |
+| `--all` | — | Update every skill in the scope |
+| `--json` | — | Output results as JSON |
+
+## Examples
+
+```bash
+skillpm update pdf
+skillpm update --all --scope global
+```
+
+```text
+✔ Updated "pdf" (score: 100/100)
+
+✓ 1 skill(s) updated
+```
+
+Skills installed from a local folder have no source to re-fetch and are skipped. Install them again with `skillpm install ./path --force`.
