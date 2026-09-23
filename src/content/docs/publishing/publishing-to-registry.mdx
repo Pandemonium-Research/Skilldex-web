@@ -1,54 +1,60 @@
 ---
 title: "Publishing to the registry"
-description: "How to submit a skill to the Skilldex registry."
+description: "How to make your skill installable from the Skilldex registry."
 section: "Publishing Skills"
-order: 32
+order: 41
 ---
 
 # Publishing to the registry
 
+Publishing does not upload your skill. The registry records where it lives on GitHub, fetches its `SKILL.md` from there, and scores it. Anyone can then install it by `your-github-handle/skill-name`.
+
 ## Before you publish
 
-1. Your skill passes `skillpm validate` with no errors
-2. Version is bumped from any previous release
-3. Description is accurate and at least 20 characters
-4. You have a Skilldex account (sign in at skilldex-web.vercel.app — coming in Phase 3)
+1. The skill is in a GitHub repository, pushed. The registry reads it from GitHub, not from your disk.
+2. `skillpm validate` shows no errors.
+3. You have a publisher token (below).
+
+## Get a token
+
+Sign in with GitHub at the registry's `/auth/github` page. Running `skillpm publish` without a token prints the exact URL. Then store the token:
+
+```bash
+skillpm config set token <token>
+```
 
 ## Publish
 
+From the skill's folder:
+
 ```bash
-skillpm publish
+skillpm publish --tags debugging,logs
 ```
 
-`skillpm` will authenticate, package, validate, and upload in one step.
+`skillpm` reads the name from `SKILL.md` and the GitHub URL from the folder's git remote. If the skill is in a subdirectory, or the remote is not its home, pass the URL yourself:
+
+```bash
+skillpm publish --source-url https://github.com/you/skills/tree/main/log-triage
+```
+
+The registry prints the skill's score and any diagnostics.
 
 ## What happens next
 
-After publishing:
-
-1. Your skill appears in the registry with a `Community` trust tier
-2. The format conformance score is calculated and displayed on the skill page
-3. Users can install it with `skillpm install your-skill-name`
-
-## Updating a skill
-
-Bump the version in `SKILL.md` frontmatter and run `skillpm publish` again. All previous versions remain available in the registry.
-
-## Unpublishing
-
-Skills cannot be deleted from the registry once other users have installed them. You can deprecate a version:
+- The skill is published under your GitHub handle: `you/log-triage`. Names are unique per owner, so another publisher's `log-triage` does not conflict with yours, and publishing a second skill with a name you already use is rejected.
+- It gets the `community` trust tier.
+- Anyone can install it:
 
 ```bash
-skillpm deprecate my-skill@1.0.0 "Use 2.0.0 instead"
+skillpm install you/log-triage
 ```
 
-Deprecated versions show a warning when installed but remain available.
+## Skillsets
 
-## Verified tier
+Skillsets publish the same way, from the skillset's folder:
 
-To apply for Verified status, open an issue in the Skilldex GitHub repository with a link to your published skill. Verified status is granted to skills that:
+```bash
+skillpm skillset publish --tags debugging
+```
 
-- Score 90+ on format conformance
-- Have clear, accurate documentation
-- Are actively maintained
-- Do not contain harmful or deceptive content
+See [`skillpm skillset`](/docs/cli/skillset).

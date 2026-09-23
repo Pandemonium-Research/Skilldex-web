@@ -12,7 +12,7 @@ Register a skill with the Skilldex registry. The registry does not store an uplo
 ## Usage
 
 ```bash
-skillpm publish [--source-url <url>] [--tags <tags>] [--update] [--json]
+skillpm publish [--source-url <url>] [--tags <tags>] [--json]
 ```
 
 Run it from the skill's folder. The skill's name comes from the `name` field in its `SKILL.md`.
@@ -23,7 +23,6 @@ Run it from the skill's folder. The skill's name comes from the `name` field in 
 |---|---|
 | `--source-url <url>` | GitHub URL of the skill. Detected from the folder's git remote if omitted |
 | `--tags <tags>` | Comma-separated tags, e.g. `pdf,documents` |
-| `--update` | Re-fetch and re-score a skill you have already published |
 | `--json` | Output the result as JSON |
 
 ## Authentication
@@ -44,9 +43,6 @@ skillpm publish --tags pdf,documents
 
 # The git remote is not the skill's home
 skillpm publish --source-url https://github.com/you/skills/tree/main/my-skill
-
-# Pick up changes you have pushed
-skillpm publish --update
 ```
 
 The skill must be pushed to GitHub first: the registry reads it from there, not from your disk. See [Publishing to the registry](/docs/publishing/publishing-to-registry).

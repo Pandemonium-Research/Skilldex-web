@@ -1,83 +1,75 @@
 ---
 title: "Creating a skill"
-description: "How to create a new Skilldex skill from scratch."
+description: "How to write a new skill from scratch."
 section: "Publishing Skills"
-order: 30
+order: 40
 ---
 
 # Creating a skill
 
-This guide walks through creating a skill from scratch.
-
-## 1. Create the directory
+## 1. Scaffold it
 
 ```bash
-mkdir my-skill
-cd my-skill
+skillpm init log-triage
+cd log-triage
 ```
 
-## 2. Create SKILL.md
+This creates `log-triage/SKILL.md` from a template that already passes validation. The name must be kebab-case and cannot contain `claude` or `anthropic`.
 
-Create a `SKILL.md` file with the required frontmatter:
+## 2. Write the description
+
+The description is how an agent decides whether to use your skill, so it matters more than anything else in the file. Say what the skill does and when to reach for it, in at least 30 words. Keep it quoted.
 
 ```yaml
 ---
-title: "My Skill"
-description: "A one-sentence description of what this skill does."
-version: "1.0.0"
-specVersion: "1.0"
-author: "your-github-username"
-license: "MIT"
-tags:
-  - your-tag
+name: log-triage
+description: "Triage application logs and stack traces to find the root cause of a failure. Use this skill when investigating a bug, a production incident, or a crash, and when the user shares logs, traces, or error output and asks what went wrong."
+tags: [debugging, logs]
 ---
 ```
 
-## 3. Write the skill body
+## 3. Write the instructions
 
-After the frontmatter, write the skill instructions. This is the content Claude Code will use. Be specific and concrete.
+Below the frontmatter, write what the agent should do — concrete steps, rules, and examples, addressed to the agent that will follow them:
 
 ```markdown
-## Overview
+# Log triage
 
-This skill helps Claude Code do X by providing Y approach.
+## When to use this
 
-## When to use this skill
+When the user shares logs or a stack trace and wants to know why something failed.
 
-Use this skill when you need to...
+## Steps
 
-## Instructions
-
-1. First, analyse the...
-2. Then, look for...
-3. Finally, output...
-
-## Example output format
-
-...
+1. Find the first error, not the loudest one.
+2. ...
 ```
+
+Keep `SKILL.md` under 500 lines; move long reference material into `references/`.
 
 ## 4. Add resources (optional)
 
-If your skill needs helper scripts or reference files, create a `resources/` directory and reference them in frontmatter:
-
-```yaml
-resources:
-  - path: resources/helper.sh
-    type: script
-  - path: resources/patterns.md
-    type: reference
+```text
+log-triage/
+├── SKILL.md
+├── scripts/       ← code the skill runs
+├── references/    ← documents to load when needed
+└── assets/        ← templates, images
 ```
 
-## 5. Validate
+Mention a file by its path in `SKILL.md` — `scripts/extract.py` — and the validator checks that it exists.
+
+## 5. Validate and try it
 
 ```bash
 skillpm validate
+cd ..
+skillpm install ./log-triage
 ```
 
-Fix any errors before proceeding. Aim for a score of 90+.
+Installing from the folder links the skill into your agent's skills directories, so you can try it before publishing. Reinstall with `--force` after each change.
 
 ## Next steps
 
-- [Packaging](/docs/publishing/packaging) — prepare your skill for publishing
-- [Publishing to the registry](/docs/publishing/publishing-to-registry) — submit to the registry
+- [Skill format](/docs/concepts/skill-format) — every rule the validator applies
+- [Publishing to the registry](/docs/publishing/publishing-to-registry) — make it installable by name
