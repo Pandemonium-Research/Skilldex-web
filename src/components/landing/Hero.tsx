@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { CommandPaletteMock } from './CommandPaletteMock'
 import { getLatestCliVersion } from '@/lib/cli-version'
+import { getStats } from '@/lib/registry'
 
 export async function Hero() {
-  const version = await getLatestCliVersion()
+  const [version, stats] = await Promise.all([getLatestCliVersion(), getStats()])
 
   return (
     <section className="py-24 sm:py-28">
@@ -50,7 +51,7 @@ export async function Hero() {
 
           {/* Right — interactive command palette mock */}
           <div className="hidden lg:block">
-            <CommandPaletteMock />
+            <CommandPaletteMock skillCount={stats?.skills.total ?? null} />
           </div>
 
         </div>

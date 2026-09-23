@@ -132,12 +132,12 @@ export async function getSkillset(name: string): Promise<RegistrySkillset | null
 /**
  * Headline counts. O(1) on the API side — served from a precomputed table, never a count(*).
  *
- * Cached longer than search results: the numbers are refreshed by the nightly seeder, so a
- * 60s revalidate would just re-fetch an identical response.
+ * Revalidated once a day: the numbers are refreshed by the nightly seeder, so anything shorter
+ * just re-fetches an identical response. The landing page and /registry share this cache entry.
  */
 export async function getStats(): Promise<RegistryStats | null> {
   try {
-    const res = await fetch(`${REGISTRY_URL}/stats`, { next: { revalidate: 300 } })
+    const res = await fetch(`${REGISTRY_URL}/stats`, { next: { revalidate: 86400 } })
     if (!res.ok) return null
     return res.json()
   } catch {

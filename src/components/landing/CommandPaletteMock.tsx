@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { formatCompact } from '@/lib/format'
 
 const SKILLS = [
   { name: 'forensics-agent',  description: 'Deep-dive memory and heap analysis for running processes', score: 94 },
@@ -9,7 +10,11 @@ const SKILLS = [
   { name: 'rfc-author',       description: 'Draft RFC-style technical documents from bullet points',   score: 85 },
 ]
 
-export function CommandPaletteMock() {
+/**
+ * `skillCount` comes from the registry's stats. When they are unavailable the label is left out
+ * rather than showing 0 or a stale figure.
+ */
+export function CommandPaletteMock({ skillCount }: { skillCount: number | null }) {
   const [selected, setSelected] = useState(0)
 
   return (
@@ -76,7 +81,7 @@ export function CommandPaletteMock() {
       {/* Footer hints */}
       <div className="flex items-center justify-between px-4 py-[10px] border-t border-surface-border text-[11px] font-mono text-text-muted">
         <span>↑↓ navigate · ↵ install · ⌘ shortcuts</span>
-        <span>3k+ skills indexed</span>
+        {skillCount ? <span>{formatCompact(skillCount)} skills indexed</span> : null}
       </div>
     </div>
   )
