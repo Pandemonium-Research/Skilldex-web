@@ -1,6 +1,6 @@
 # Skilldex Web
 
-> The official marketing and documentation website for Skilldex — the package manager for Claude Code skills.
+> The official marketing and documentation website for Skilldex — the package manager for agent skills.
 
 ## 🎯 Overview
 
@@ -9,7 +9,7 @@ Skilldex Web is a Next.js-based website that serves as the central hub for the S
 - **Landing page** showcasing the Skilldex platform and its core benefits
 - **Comprehensive documentation** including CLI reference, concepts, and publishing guides
 - **Installation instructions** for the Skilldex CLI across multiple platforms
-- **Registry preview** and skill discovery interface
+- **Registry browser** for searching the skill registry and viewing each skill and skillset
 - **Educational content** about skill creation, validation, and best practices
 
 This repository hosts the website infrastructure while the CLI tool and registry backend are maintained separately.
@@ -20,16 +20,16 @@ Skilldex solves a fundamental problem in the Claude Code ecosystem: **how to pac
 
 Think of it like npm, but for AI agent capabilities instead of JavaScript libraries:
 
-- **Skills** are markdown files containing reusable instruction sets that extend what Claude Code can do
-- **The CLI** (`skillpm`) provides commands to install, manage, and publish skills
-- **The Registry** is a central hub for discovering and publishing vetted skills
-- **The Spec** defines what makes a valid, conformant skill
+- **Skills** are folders built around a `SKILL.md` — instructions and resources that extend what a coding agent can do
+- **The CLI** (`skillpm`) searches, installs, validates, and publishes skills, and links them into the directories Claude Code, Codex, Cursor, and other agents read
+- **The Registry** indexes skills published on GitHub, addressed as `owner/name`, each scored for format conformance
+- **The Validator** scores every skill against the skill format specification
 
 ### The Problem Skilldex Solves
 
 1. **No central home** — Skills live scattered across projects with no standard way to share them
 2. **No install command** — Sharing a skill means attaching files to messages, no versioning or distribution
-3. **No quality signal** — No way to know if a skill follows standards, targets current Claude versions, or is maintained
+3. **No quality signal** — No way to know if a skill follows the format agents expect
 
 ## 📁 Project Structure
 
@@ -44,16 +44,20 @@ skilldex-web/
 │   │   │   ├── layout.tsx           # Docs layout with sidebar
 │   │   │   ├── page.tsx             # Docs index
 │   │   │   └── [...slug]/page.tsx   # Dynamic doc pages
-│   │   └── install/                 # CLI installation page
-│   │       └── page.tsx
+│   │   ├── install/                 # CLI installation page
+│   │   │   └── page.tsx
+│   │   ├── registry/                # Registry browser: search, /registry/[owner]/[name], skillsets
+│   │   ├── api/registry/skills/     # Proxy for the registry browser's "load more"
+│   │   └── robots.ts                # Keeps crawlers off filtered registry URLs
 │   ├── components/
 │   │   ├── landing/                 # Landing page sections
-│   │   │   ├── Hero.tsx             # Main hero section
+│   │   │   ├── Hero.tsx             # Hero: CLI version from npm, skill count from registry stats
+│   │   │   ├── CommandPaletteMock.tsx # Search mock in the hero
 │   │   │   ├── ProblemSection.tsx   # Problem statement
 │   │   │   ├── HowItWorks.tsx       # 3-step workflow visualization
-│   │   │   ├── TerminalDemo.tsx     # Animated terminal demo
-│   │   │   ├── RegistryPreview.tsx  # Registry preview
-│   │   │   └── InstallStrip.tsx     # Install CTA strip
+│   │   │   ├── TerminalDemo.tsx     # Terminal demo, mirroring skillpm's real output
+│   │   │   ├── RegistryPreview.tsx  # Most-installed skills, live from the registry
+│   │   │   └── InstallStrip.tsx     # Install tabs strip (not currently on the page)
 │   │   ├── docs/                    # Documentation components
 │   │   │   ├── DocsSidebar.tsx      # Navigation sidebar
 │   │   │   ├── DocsSidebarClient.tsx # Client-side sidebar logic
@@ -71,13 +75,8 @@ skilldex-web/
 │   │       └── TabSwitcher.tsx      # Tab switcher component
 │   ├── content/
 │   │   └── docs/                    # MDX documentation files
-│   │       ├── cli/                 # CLI command references
-│   │       │   ├── install.mdx
-│   │       │   ├── list.mdx
-│   │       │   ├── publish.mdx
-│   │       │   ├── suggest.mdx
-│   │       │   ├── uninstall.mdx
-│   │       │   └── validate.mdx
+│   │       ├── cli/                 # One page per command: install, uninstall, list, search,
+│   │       │                        #   update, validate, init, publish, suggest, skillset, config, mcp
 │   │       ├── concepts/            # Core concepts
 │   │       │   ├── manifest.mdx
 │   │       │   ├── quality-scoring.mdx
@@ -90,11 +89,12 @@ skilldex-web/
 │   │       │   └── first-skill.mdx
 │   │       └── publishing/          # Publishing guides
 │   │           ├── creating-a-skill.mdx
-│   │           ├── packaging.mdx
 │   │           └── publishing-to-registry.mdx
 │   ├── lib/
-│   │   └── docs.ts                  # Documentation utilities
-│   │       └── Functions for parsing, organizing, and navigating MDX files
+│   │   ├── docs.ts                  # Parsing, organizing, and navigating MDX files
+│   │   ├── registry.ts              # Registry API client (REGISTRY_URL)
+│   │   ├── cli-version.ts           # Latest skilldex-cli version from npm
+│   │   └── format.ts                # Count formatting ("1,000+", "1.6M+")
 │   └── types/
 │       ├── docs.ts                  # Type definitions for documentation
 │       └── registry.ts              # Type definitions for registry data
@@ -136,12 +136,11 @@ skilldex-web/
 
 ### 1. Landing Page
 
-- **Hero Section** — Introduces Skilldex and the CLI
+- **Hero Section** — Introduces Skilldex, with the current CLI version and the registry's skill count
 - **Problem Statement** — Illustrates what Skilldex solves
 - **How It Works** — 3-step workflow with code examples
-- **Terminal Demo** — Animated demonstration of CLI usage
-- **Registry Preview** — Showcases available skills
-- **Call-to-Action** — Guides users to get started
+- **Terminal Demo** — An install and list, as `skillpm` prints them
+- **Registry Preview** — The most-installed skills, live from the registry
 
 ### 2. Documentation Site
 
@@ -156,8 +155,7 @@ skilldex-web/
 
 ### 3. Installation Page
 
-- **Platform Tabs** — macOS, Linux, Windows installation methods
-- **Multiple Package Managers** — npm (all platforms), Homebrew (via `brew tap pandemonium-research/skilldex`, macOS/Linux), Scoop (via `scoop bucket add skilldex`, Windows)
+- **Install Tabs** — npm (all platforms), Homebrew (via `brew tap pandemonium-research/skilldex`, macOS/Linux), curl (`install.sh`, macOS/Linux), Scoop (via `scoop bucket add skilldex`, Windows)
 - **Clear Instructions** — Step-by-step setup guides
 
 ### 4. UI Components
@@ -273,29 +271,23 @@ The project uses Tailwind CSS with custom design tokens defined in `tailwind.con
 
 ### Skills
 
-Reusable instruction sets for Claude Code. Each skill is a `SKILL.md` file with YAML frontmatter containing metadata and the instruction content.
+A skill is a directory with a `SKILL.md`: YAML frontmatter (`name` and `description` are required) followed by the instructions an agent follows, plus optional `scripts/`, `references/`, and `assets/`.
 
 ### Quality Scoring
 
-A 0-100 format conformance score measuring how well a skill follows the Skilldex spec. Calculated by checking:
-
-- Presence of required frontmatter fields
-- Valid semantic versioning
-- Resource file integrity
-- Markdown validity
-- Documentation quality
+A 0–100 format conformance score from `@skilldex/validator`: eleven checks on the frontmatter, name, description, length, folder layout, and referenced files, weighted from the specification. See `src/content/docs/concepts/quality-scoring.mdx`.
 
 ### Skill Scopes
 
-Three installation contexts:
+Three installation scopes, each linked into the agent directories at its level:
 
-- **Global** — Available in all Claude Code sessions
-- **Shared** — Shared with team members
-- **Project** — Checked into repository
+- **Project** (default) — `<project>/.skilldex/`, linked into the project's `.agents/skills` and `.claude/skills`
+- **Shared** — `~/.skilldex/shared/`, linked into your home directory's agent directories
+- **Global** — `~/.skilldex/global/`, linked into your home directory's agent directories
 
 ### Spec Version
 
-Skills declare which Skilldex specification version they conform to, ensuring forward compatibility.
+The skill format spec is at 1.0 and the skillset spec at 1.1 (`SPEC_VERSION` and `SKILLSET_SPEC_VERSION` in `@skilldex/validator`).
 
 ## 🔗 Related Repositories
 
@@ -303,7 +295,7 @@ Skills declare which Skilldex specification version they conform to, ensuring fo
 - **[Homebrew Tap](https://github.com/Pandemonium-Research/homebrew-skilldex)** — `brew tap pandemonium-research/skilldex && brew install skilldex-cli` (macOS/Linux)
 - **[Scoop Bucket](https://github.com/Pandemonium-Research/scoop-skilldex)** — `scoop bucket add skilldex https://github.com/Pandemonium-Research/scoop-skilldex && scoop install skilldex-cli` (Windows)
 - **[npm Package](https://www.npmjs.com/package/skilldex-cli)** — Published package on npm (all platforms)
-- **Registry Backend** — The skill registry API and storage (coming soon)
+- **[Registry Backend](https://github.com/Pandemonium-Research/Skilldex-registry)** — The registry API the site reads from (`REGISTRY_URL`, default `https://skilldex-registry.vercel.app/v1`)
 
 ## 🤝 Contributing
 
@@ -311,7 +303,6 @@ Contributions welcome! Areas for improvement:
 
 - **Documentation** — More guides, examples, and tutorials
 - **Components** — New UI components for docs or landing
-- **Features** — Interactive registry, search functionality
 - **Localization** — Support for multiple languages
 - **SEO** — Improved metadata and structured data
 
