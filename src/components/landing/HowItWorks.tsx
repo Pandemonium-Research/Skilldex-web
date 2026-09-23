@@ -13,13 +13,13 @@ const steps = [
     step: '2',
     title: 'Find a skill',
     body: 'Search the registry by name, tag, or description.',
-    code: 'skillpm search forensics',
+    code: 'skillpm search pdf',
   },
   {
     step: '3',
     title: 'Install and use',
-    body: 'Installed globally or into your project. Claude Code picks it up immediately.',
-    code: 'skillpm install forensics',
+    body: 'Installed globally or into your project, and linked into Claude Code, Codex, Cursor and other agents automatically.',
+    code: 'skillpm install anthropics/pdf',
   },
 ]
 

@@ -52,7 +52,7 @@ export async function RegistryPreview() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <p className="text-xs font-mono text-brand uppercase tracking-[0.14em] mb-1 font-semibold">Registry</p>
-            <h2 className="text-2xl font-semibold">Popular this week</h2>
+            <h2 className="text-2xl font-semibold">Most installed</h2>
           </div>
           <Link href="/registry" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
             Browse all →
