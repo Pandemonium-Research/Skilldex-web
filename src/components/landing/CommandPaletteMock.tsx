@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import { formatCompact } from '@/lib/format'
 
+// Four registry rows matching "document" (score >= 85, short names, one per skill name), shown by
+// qualified name since bare names collide across owners.
 const SKILLS = [
-  { name: 'forensics-agent',  description: 'Deep-dive memory and heap analysis for running processes', score: 94 },
-  { name: 'shadcn-builder',   description: 'Scaffold and theme shadcn/ui components from a prompt',   score: 91 },
-  { name: 'sql-explainer',    description: 'Annotate and explain any SQL query with execution plans',  score: 88 },
-  { name: 'rfc-author',       description: 'Draft RFC-style technical documents from bullet points',   score: 85 },
+  { name: 'anthropics/docx',         description: 'Create, read, edit, or manipulate Word documents',                   score: 93 },
+  { name: 'Matir/react-pdf',         description: 'Generate PDF documents with React-PDF and TypeScript',               score: 87 },
+  { name: 'victoriacity/lit-review', description: 'Find papers and document a literature review for a research topic', score: 94 },
+  { name: 'PanJason/pr',             description: 'Create well-documented pull requests with comprehensive descriptions', score: 94 },
 ]
 
 /**
@@ -26,7 +28,7 @@ export function CommandPaletteMock({ skillCount }: { skillCount: number | null }
         </svg>
         <input
           readOnly
-          value="forensics"
+          value="document"
           className="flex-1 bg-transparent border-none outline-none text-text-primary text-[15px] font-sans caret-brand"
           aria-label="Search registry"
         />
@@ -38,7 +40,7 @@ export function CommandPaletteMock({ skillCount }: { skillCount: number | null }
       {/* Results list */}
       <div className="px-2 pt-2 pb-3">
         <p className="px-3 py-1.5 text-[11px] font-mono text-text-muted uppercase tracking-[0.08em]">
-          Skills · 12 results
+          Skills · 1,000+ results
         </p>
         {SKILLS.map((skill, i) => (
           <div
@@ -56,12 +58,12 @@ export function CommandPaletteMock({ skillCount }: { skillCount: number | null }
                 ? 'bg-gradient-to-br from-brand to-brand-dim text-[#1a0e02] shadow-[0_0_12px_rgba(255,138,31,0.4)]'
                 : 'bg-surface-overlay text-text-secondary'
             }`}>
-              {skill.name[0].toUpperCase()}
+              {skill.name.split('/')[1][0].toUpperCase()}
             </div>
 
             {/* Name + description */}
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-text-primary mb-0.5">{skill.name}</div>
+              <div className="text-sm font-medium text-text-primary mb-0.5 truncate">{skill.name}</div>
               <div className="text-xs text-text-secondary truncate">{skill.description}</div>
             </div>
 

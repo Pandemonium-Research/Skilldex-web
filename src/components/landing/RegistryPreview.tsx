@@ -34,9 +34,9 @@ function SkillRow({ skill }: { skill: RegistrySkill }) {
       )}
       <div className="flex items-center gap-2 bg-surface-overlay border border-surface-border rounded-lg px-3 py-1.5 flex-none">
         <code className="text-xs font-mono text-text-primary whitespace-nowrap">
-          skillpm i {skill.name}
+          skillpm i {skill.qualified_name}
         </code>
-        <CopyButton text={`skillpm install ${skill.name}`} />
+        <CopyButton text={`skillpm install ${skill.qualified_name}`} />
       </div>
     </div>
   )
